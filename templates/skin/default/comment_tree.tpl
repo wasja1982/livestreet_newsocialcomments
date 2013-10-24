@@ -7,9 +7,6 @@
 
 {hook run='comment_tree_begin' iTargetId=$iTargetId sTargetType=$sTargetType}
 
-{if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}
-	<script src="/plugins/newsocialcomments/templates/skin/default/js/scripts.js" type="text/javascript"></script>
-{/if}
 {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}
 	<script src="http://vkontakte.ru/js/api/openapi.js" type="text/javascript"></script>
 {/if}
@@ -24,8 +21,8 @@
 </script>
 <style>
 	#social_info .icon {position:relative;top:2px;left:4px;padding:0;margin:0 2px 0 0;display:inline-block;width:16px;height:16px;}
-	.small_vk_icon {padding:2px 0 0 16px;background:url(/plugins/newsocialcomments/templates/skin/default/images/auth_icons_small.png) -16px 0 no-repeat;}
-	.small_fb_icon {padding:2px 0 0 16px;background:url(/plugins/newsocialcomments/templates/skin/default/images/auth_icons_small.png) -64px 0 no-repeat;}
+	.small_vk_icon {padding:2px 0 0 16px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons_small.png) -16px 0 no-repeat;}
+	.small_fb_icon {padding:2px 0 0 16px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons_small.png) -64px 0 no-repeat;}
 	.login.small_vk_icon, .login.small_fb_icon {cursor:pointer;margin: 0 0px 0 6px;}
 	#social_info .name {padding-left:3px;}
 </style>
