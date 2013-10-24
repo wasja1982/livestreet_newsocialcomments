@@ -15,18 +15,30 @@ class PluginOpencomments_ModuleComment_EntityComment extends PluginOpencomments_
 	public function getGuestEmail() {
 		return (isset($this->_aData['guest_email']) ? $this->_aData['guest_email'] : '');
 	}
-	public function getGuestAvatar() {
-		return (isset($this->_aData['guest_avatar']) ? $this->_aData['guest_avatar'] : '');
+	public function getGuestExtra() {
+		return (isset($this->_aData['guest_extra']) ? $this->_aData['guest_extra'] : '');
 	}
-    
+	public function getGuestAvatar() {
+		$extra = $this->getGuestExtra();
+		$extra = (empty($extra) ? array() : unserialize($extra));
+		return (isset($extra['avatar']) ? $extra['avatar'] : '');
+	}
+
 	public function setGuestName($data) {
 		$this->_aData['guest_name']=$data;
 	}
 	public function setGuestEmail($data) {
 		$this->_aData['guest_email']=$data;
 	}
+	public function setGuestExtra($data) {
+		$this->_aData['guest_extra']=$data;
+	}
 	public function setGuestAvatar($data) {
-		$this->_aData['guest_avatar']=$data;
+		$extra = $this->getGuestExtra();
+		$extra = (empty($extra) ? array() : unserialize($extra));
+		$extra['avatar'] = $data;
+		$this->setGuestExtra(serialize($extra));
+	}
 	}
 }
 ?>

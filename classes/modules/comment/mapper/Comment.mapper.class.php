@@ -23,11 +23,11 @@ class PluginOpencomments_ModuleComment_MapperComment extends PluginOpencomments_
 			comment_text_hash,
             guest_name,
             guest_email,
-            guest_avatar
+            guest_extra
 			)
 			VALUES(?, ?d, ?, ?d, ?d, ?, ?, ?, ?, ?, ?, ?)
 		";			
-		if ($iId=$this->oDb->query($sql,$oComment->getPid(),$oComment->getTargetId(),$oComment->getTargetType(),$oComment->getTargetParentId(),$oComment->getUserId(),$oComment->getText(),$oComment->getDate(),$oComment->getUserIp(),$oComment->getTextHash(),$oComment->getGuestName(),$oComment->getGuestEmail(),$oComment->getGuestAvatar())) 
+		if ($iId=$this->oDb->query($sql,$oComment->getPid(),$oComment->getTargetId(),$oComment->getTargetType(),$oComment->getTargetParentId(),$oComment->getUserId(),$oComment->getText(),$oComment->getDate(),$oComment->getUserIp(),$oComment->getTextHash(),$oComment->getGuestName(),$oComment->getGuestEmail(),$oComment->getGuestExtra())) 
 		{
 			return $iId;
 		}	
