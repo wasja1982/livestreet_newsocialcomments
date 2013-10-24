@@ -19,7 +19,11 @@
 	
 	<div class="folding"></div>
 	
+	{if !$oComment->getGuestAvatar() }
 	<a href="{$oUser->getUserWebPath()}"><img src="{$oUser->getProfileAvatarPath(48)}" alt="avatar" class="comment-avatar" /></a>
+	{else}
+	<img src="{$oComment->getGuestAvatar()}" alt="avatar" class="comment-avatar" />
+	{/if}
 		<div id="comment_content_id_{$oComment->getId()}" class="comment-content">
 			<div class=" text">
 				{$oComment->getText()}

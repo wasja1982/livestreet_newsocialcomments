@@ -2,7 +2,7 @@
 /**
  * OpenСomments - плагин для гостевых комментариев
  *
- * Автор:	flexbyte 
+ * Автор:	flexbyte
  * Профиль:	http://livestreet.ru/profile/flexbyte/
  * Сайт:	http://flexbyte.com
  **/
@@ -12,12 +12,12 @@
  *
  */
 
-class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlog 
-{ 
-    
+class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlog
+{
+
 	/**
 	 * Обработка добавление комментария к топику
-	 *	 
+	 *
 	 * @return bool
 	 */
 	protected function SubmitComment() {
@@ -30,11 +30,11 @@ class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlo
 			$this->oUserCurrent = $this->User_GetUserById(0);
 			$guest = true;
 
-			if (!Config::Get('plugin.opencomments.enabled')) {
+			if (!Config::Get('plugin.opencomments.enabled') && !getRequest("social")) {
 				$this->Message_AddErrorSingle($this->Lang_Get('not_access'),$this->Lang_Get('error'));
 				return;
 			}
-			
+
 			/**
 			* Проверяем на наличие aceAdminPanel, чтобы проверить IP адрес в бане
 			*/
@@ -47,23 +47,30 @@ class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlo
 					}
 				}
 			}
-			
-            if (!func_check(getRequest("guest_name"),"text",2,20)) {
+
+            if (!func_check(getRequest("guest_name"),"text",2,50)) {
                 $this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_name'),$this->Lang_Get('error'));
                 return;
             }
-            
-			if (Config::Get('plugin.opencomments.ask_mail')) {
-				if (!func_check(getRequest("guest_email"),"mail")) {
-					$this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_mail'),$this->Lang_Get('error'));
+
+			if (!getRequest("social")) {
+				if (Config::Get('plugin.opencomments.ask_mail')) {
+					if (!func_check(getRequest("guest_email"),"mail")) {
+						$this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_mail'),$this->Lang_Get('error'));
+						return;
+					}
+				}
+
+				if (!isset($_SESSION['captcha_keystring']) or $_SESSION['captcha_keystring']!=strtolower(getRequest('captcha'))) {
+					$this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_captcha'),$this->Lang_Get('error'));
+					return;
+				}
+			} else {
+				if (!func_check(getRequest("social_avatar"),"text",1,255)) {
+					$this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_social'),$this->Lang_Get('error'));
 					return;
 				}
 			}
-
-            if (!isset($_SESSION['captcha_keystring']) or $_SESSION['captcha_keystring']!=strtolower(getRequest('captcha'))) {
-                $this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_captcha'),$this->Lang_Get('error'));
-                return;
-            }
 		}
 
 		/**
@@ -110,7 +117,7 @@ class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlo
 		} else {
 			$sText=$this->Text_Parser(getRequest('comment_text'));
 		}
-		
+
 		if (!func_check($sText,'text',2,10000)) {
 			$this->Message_AddErrorSingle($this->Lang_Get('topic_comment_add_text_error'),$this->Lang_Get('error'));
 			return;
@@ -166,13 +173,14 @@ class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlo
 		$oCommentNew->setPid($sParentId);
 		$oCommentNew->setTextHash(md5($sText));
 		$oCommentNew->setPublish($oTopic->getPublish());
-		
-		if ($guest) { 
-            $oCommentNew->setGuestName(getRequest("guest_name"));                           
-            $oCommentNew->setGuestEmail(getRequest("guest_email"));                                
+
+		if ($guest) {
+            $oCommentNew->setGuestName(getRequest("guest_name"));
+            $oCommentNew->setGuestEmail(getRequest("guest_email"));
+            $oCommentNew->setGuestAvatar(getRequest("social_avatar") ? getRequest("social_avatar") : null);
             unset($_SESSION['captcha_keystring']);
         } else {
-		    $oCommentNew->setGuestName(null);                           
+		    $oCommentNew->setGuestName(null);
             $oCommentNew->setGuestEmail(null);
 		}
 
@@ -297,6 +305,6 @@ class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlo
 
 		$this->Viewer_AssignAjax('iMaxIdComment',$iMaxIdComment);
 		$this->Viewer_AssignAjax('aComments',$aComments);
-	}	
+	}
 }
 ?>

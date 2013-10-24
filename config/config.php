@@ -15,5 +15,15 @@ $config['enabled']=true;
 // Запрашивать e-mail
 $config['ask_mail']=true;
 
+// Разрешить авторизацию через Facebook
+$config['use_fb_api']=true;
+// Идентификатор приложения для Facebook
+$config['fb_id']='000000000000000';
+
+// Разрешить авторизацию через Вконтакте
+$config['use_vk_api']=true;
+// Идентификатор приложения для Вконтакте
+$config['vk_id']=0000000;
+
 return $config;
 ?>
