@@ -24,7 +24,7 @@
 								<a href="{$oComment->getGuestProfile()}">{$oComment->getGuestName()}</a>
 							{/if}
 						{/if}
-						&nbsp;&nbsp;<i><small>{$aLang.opencomments_guest}</small></i>
+						&nbsp;&nbsp;<i><small>{$aLang.newsocialcomments_guest}</small></i>
 			        {else}
 						<a href="{$oUser->getUserWebPath()}"><img src="{$oUser->getProfileAvatarPath(24)}" alt="avatar" class="comment-avatar" /></a>
 						<a href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>

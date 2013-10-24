@@ -104,7 +104,7 @@
 			{/if}
 			<li class="goto goto-comment-child"><a href="#" title="{$aLang.comment_goto_child}">&darr;</a></li>
 			
-			{if $oUserCurrent or $oConfig->GetValue('plugin.opencomments.enabled')}
+			{if $oUserCurrent or $oConfig->GetValue('plugin.newsocialcomments.enabled')or $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}
 				{if !$oComment->getDelete() and !$bAllowNewComment}
 					<li><a href="#" onclick="ls.comments.toggleCommentForm({$oComment->getId()}); return false;" class="reply-link link-dotted">{$aLang.comment_answer}</a></li>
 				{/if}

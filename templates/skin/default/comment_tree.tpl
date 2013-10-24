@@ -102,7 +102,7 @@
 				<input type="hidden" name="cmt_target_id" value="{$iTargetId}" />
 			</form>
 		</div>
-	{elseif $oConfig->GetValue('plugin.opencomments.enabled')}
+	{elseif $oConfig->GetValue('plugin.newsocialcomments.enabled') or $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}
 		{include file='editor.tpl' sImgToLoad='form_comment_text' sSettingsTinymce='ls.settings.getTinymceComment()' sSettingsMarkitup='ls.settings.getMarkitupComment()'}
 		
 		<h4 class="reply-header" id="comment_id_0">
@@ -130,7 +130,6 @@
 				<textarea name="comment_text" id="form_comment_text" class="mce-editor markitup-editor input-width-full"></textarea>
 				
 				{hook run='form_add_comment_end'}
-				
           
           		<div id="capcha" style="padding-top:15px;">
 						<b>{$aLang.plugin.newsocialcomments.newsocialcomments_captcha}:</b><br />
