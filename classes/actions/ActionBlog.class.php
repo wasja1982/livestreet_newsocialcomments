@@ -66,7 +66,7 @@ class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlo
 					return;
 				}
 			} else {
-				if (!func_check(getRequest("social_avatar"),"text",1,255)) {
+				if (!func_check(getRequest("social_avatar"),"text",1,255) || !func_check(getRequest("social_profile"),"text",1,255)) {
 					$this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_social'),$this->Lang_Get('error'));
 					return;
 				}
@@ -178,6 +178,7 @@ class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlo
             $oCommentNew->setGuestName(getRequest("guest_name"));
             $oCommentNew->setGuestEmail(getRequest("guest_email"));
             $oCommentNew->setGuestAvatar(getRequest("social_avatar") ? getRequest("social_avatar") : null);
+            $oCommentNew->setGuestProfile(getRequest("social_profile") ? getRequest("social_profile") : null);
             unset($_SESSION['captcha_keystring']);
         } else {
 		    $oCommentNew->setGuestName(null);

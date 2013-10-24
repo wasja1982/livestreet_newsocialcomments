@@ -3,18 +3,20 @@ function vk_auth(response) {
 	if (response.status === 'connected') {
 		var uid = response.session.mid
 		var sid = response.session.sid
-		
+
 		var get_avatar=function(response){
 			var avatar = response.response[0].photo;
 			$("#form_comment").append("<input type='hidden' name='social_avatar' id='social_avatar' value='"+avatar+"' />");
+			var uid = response.response[0].uid;
+			$("#form_comment").append("<input type='hidden' name='social_profile' id='social_profile' value='https://vk.com/id"+uid+"' />");
 		}
-		
+
 		VK.Api.call('getProfiles',{
-			uids: uid , 
+			uids: uid ,
 			fields:'photo'},
 			get_avatar
 		);
-		
+
 		var name = response.session.user.first_name + ' ' + response.session.user.last_name
 		$("#guest_name").attr("value",name);
 		$("#social_info span.name").text(name);
@@ -35,7 +37,7 @@ function facebook_auth(response) {
 	if (response.authResponse) {
 		var uid = response.authResponse.userID;
 		var token = response.authResponse.accessToken;
-		
+
 		FB.api('/me', function(response) {
 			$("#guest_name").attr("value",response.name);
 			$("#social_info span.name").text(response.name);
@@ -44,9 +46,10 @@ function facebook_auth(response) {
 			$("#social_chooser, #capcha, #guest_input, #guest_email").hide();
 			$("#form_comment").append("<input type='hidden' name='social' id='social' value='fb' />");
 			$("#sc_exit").addClass("fb");
-			
+
 			var avatar = 'http://graph.facebook.com/' + response.id + '/picture';
 			$("#form_comment").append("<input type='hidden' name='social_avatar' id='social_avatar' value='"+avatar+"' />");
+			$("#form_comment").append("<input type='hidden' name='social_profile' id='social_profile' value='https://www.facebook.com/profile.php?id="+uid+"' />");
 		});
 	} else {
 		$("#guest_name").attr("value","");
@@ -57,6 +60,7 @@ function facebook_auth(response) {
 		$("#form_comment").find("#social").remove();
 		$("#sc_exit").removeClass("fb");
 		$("#form_comment").find("#social_avatar").remove();
+		$("#form_comment").find("#social_profile").remove();
 	}
 }
 
@@ -70,6 +74,7 @@ function check_vk_status(response) {
 		$("#form_comment").find("#social").remove();
 		$("#sc_exit").removeClass("vk");
 		$("#form_comment").find("#social_avatar").remove();
+		$("#form_comment").find("#social_profile").remove();
 	}
 }
 
@@ -94,5 +99,5 @@ $(function() {
 	});
 	VK.init({apiId: vk_id});
 	VK.Auth.getLoginStatus(vk_auth, true);
-	
-}); 
+
+});

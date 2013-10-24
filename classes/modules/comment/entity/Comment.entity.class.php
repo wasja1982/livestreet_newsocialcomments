@@ -23,6 +23,11 @@ class PluginOpencomments_ModuleComment_EntityComment extends PluginOpencomments_
 		$extra = (empty($extra) ? array() : unserialize($extra));
 		return (isset($extra['avatar']) ? $extra['avatar'] : '');
 	}
+	public function getGuestProfile() {
+		$extra = $this->getGuestExtra();
+		$extra = (empty($extra) ? array() : unserialize($extra));
+		return (isset($extra['profile']) ? $extra['profile'] : '');
+	}
 
 	public function setGuestName($data) {
 		$this->_aData['guest_name']=$data;
@@ -39,6 +44,11 @@ class PluginOpencomments_ModuleComment_EntityComment extends PluginOpencomments_
 		$extra['avatar'] = $data;
 		$this->setGuestExtra(serialize($extra));
 	}
+	public function setGuestProfile($data) {
+		$extra = $this->getGuestExtra();
+		$extra = (empty($extra) ? array() : unserialize($extra));
+		$extra['profile'] = $data;
+		$this->setGuestExtra(serialize($extra));
 	}
 }
 ?>
