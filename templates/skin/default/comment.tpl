@@ -46,7 +46,7 @@
 				{else}
 				<a href="{$oComment->getGuestProfile()}">{$oComment->getGuestName()}</a>
 				{/if}
-				&nbsp;&nbsp;&nbsp;<i><small>{$aLang.plugin.opencomments.opencomments_guest}</small></i>
+				&nbsp;&nbsp;&nbsp;<i><small>{$aLang.plugin.newsocialcomments.newsocialcomments_guest}</small></i>
 			</li>
     {else}
     		<li class="comment-author {if $iAuthorId == $oUser->getId()}comment-topic-author{/if}" title="{if $iAuthorId == $oUser->getId() and $sAuthorNotice}{$sAuthorNotice}{/if}">

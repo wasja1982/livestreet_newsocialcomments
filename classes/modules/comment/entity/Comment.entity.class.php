@@ -1,13 +1,19 @@
 <?php
 /**
- * OpenСomments - плагин для гостевых комментариев
+ * New Social Comments - плагин для социальных комментариев
  *
- * Автор:	flexbyte
- * Профиль:	http://livestreet.ru/profile/flexbyte/
- * Сайт:	http://flexbyte.com
+ * Версия:	1.0.0
+ * Автор:	Александр Вереник
+ * Профиль:	http://livestreet.ru/profile/Wasja/
+ * GitHub:	https://github.com/wasja1982/livestreet_newsocialcomments
+ *
+ * Основан на плагинах:
+ * 1) "OpenComments" (автор: flexbyte, модификации: iMind) - https://catalog.livestreetcms.com/addon/view/39/, https://github.com/iM1nd/opencomments
+ * 2) "Social Comments" (автор: 4ever4you) - https://catalog.livestreetcms.com/addon/view/201/
+ *
  **/
 
-class PluginOpencomments_ModuleComment_EntityComment extends PluginOpencomments_Inherit_ModuleComment_EntityComment
+class PluginNewsocialcomments_ModuleComment_EntityComment extends PluginNewsocialcomments_Inherit_ModuleComment_EntityComment
 {
 	public function getGuestName() {
 		return (isset($this->_aData['guest_name']) ? $this->_aData['guest_name'] : '');

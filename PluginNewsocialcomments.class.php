@@ -1,13 +1,18 @@
 <?php
 /**
- * OpenСomments - плагин для гостевых комментариев
+ * New Social Comments - плагин для социальных комментариев
  *
- * Версия:	1.3
- * Автор:	flexbyte 
- * Профиль:	http://livestreet.ru/profile/flexbyte/
- * Сайт:	http://flexbyte.com
+ * Версия:	1.0.0
+ * Автор:	Александр Вереник
+ * Профиль:	http://livestreet.ru/profile/Wasja/
+ * GitHub:	https://github.com/wasja1982/livestreet_newsocialcomments
+ *
+ * Основан на плагинах:
+ * 1) "OpenComments" (автор: flexbyte, модификации: iMind) - https://catalog.livestreetcms.com/addon/view/39/, https://github.com/iM1nd/opencomments
+ * 2) "Social Comments" (автор: 4ever4you) - https://catalog.livestreetcms.com/addon/view/201/
+ *
  **/
- 
+
 /**
  * Запрещаем напрямую через браузер обращение к этому файлу.
  */
@@ -15,7 +20,7 @@ if (!class_exists('Plugin')) {
 	die('Hacking attemp!');
 }
 
-class PluginOpencomments extends Plugin {
+class PluginNewsocialcomments extends Plugin {
 
 	protected $aDelegates = array(
 		'template' => array('comment_tree.tpl' => '_comment_tree.tpl', 'comment.tpl' => '_comment.tpl', 

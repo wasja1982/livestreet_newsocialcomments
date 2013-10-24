@@ -1,31 +1,37 @@
 <?php
 /**
- * OpenСomments - плагин для гостевых комментариев
+ * New Social Comments - плагин для социальных комментариев
  *
- * Автор:	flexbyte 
- * Профиль:	http://livestreet.ru/profile/flexbyte/
- * Сайт:	http://flexbyte.com
+ * Версия:	1.0.0
+ * Автор:	Александр Вереник
+ * Профиль:	http://livestreet.ru/profile/Wasja/
+ * GitHub:	https://github.com/wasja1982/livestreet_newsocialcomments
+ *
+ * Основан на плагинах:
+ * 1) "OpenComments" (автор: flexbyte, модификации: iMind) - https://catalog.livestreetcms.com/addon/view/39/, https://github.com/iM1nd/opencomments
+ * 2) "Social Comments" (автор: 4ever4you) - https://catalog.livestreetcms.com/addon/view/201/
+ *
  **/
 
 /**
  * Русский языковой файл
  */
 return array(
-	'opencomments_name' => 'Имя',
-	'opencomments_mail' => 'E-mail',
-	'opencomments_title' => 'Вы — гость, и вам запрещено использовать HTML-теги.',
-	'opencomments_captcha' => 'Введите код с картинки',
-	'opencomments_guest' => 'Гость',
-	'opencomments_comment' => 'Комментировать при помощи',
-	'opencomments_comment_vk' => 'Комментировать, используя профиль ВКонтакте',
-	'opencomments_comment_fb' => 'Комментировать, используя профиль Facebook',
-	'opencomments_hello' => 'Здравствуйте, ',
-	'opencomments_exit' => 'Выйти',
+	'newsocialcomments_name' => 'Имя',
+	'newsocialcomments_mail' => 'E-mail',
+	'newsocialcomments_title' => 'Вы — гость, и вам запрещено использовать HTML-теги.',
+	'newsocialcomments_captcha' => 'Введите код с картинки',
+	'newsocialcomments_guest' => 'Гость',
+	'newsocialcomments_comment' => 'Комментировать при помощи',
+	'newsocialcomments_comment_vk' => 'Комментировать, используя профиль ВКонтакте',
+	'newsocialcomments_comment_fb' => 'Комментировать, используя профиль Facebook',
+	'newsocialcomments_hello' => 'Здравствуйте, ',
+	'newsocialcomments_exit' => 'Выйти',
 
-	'opencomments_error_name' => 'Необходимо указать Ваше имя (от 2х до 50 символов)',
-	'opencomments_error_mail' => 'Email указан неверно.',
-	'opencomments_error_social' => 'Невозможно загрузить данные для авторизации.',
-	'opencomments_error_captcha' => 'Неверный код',
+	'newsocialcomments_error_name' => 'Необходимо указать Ваше имя (от 2х до 50 символов)',
+	'newsocialcomments_error_mail' => 'Email указан неверно.',
+	'newsocialcomments_error_social' => 'Невозможно загрузить данные для авторизации.',
+	'newsocialcomments_error_captcha' => 'Неверный код',
 
 );
 

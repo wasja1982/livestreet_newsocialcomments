@@ -1,10 +1,16 @@
 <?php
 /**
- * OpenСomments - плагин для гостевых комментариев
+ * New Social Comments - плагин для социальных комментариев
  *
- * Автор:	flexbyte
- * Профиль:	http://livestreet.ru/profile/flexbyte/
- * Сайт:	http://flexbyte.com
+ * Версия:	1.0.0
+ * Автор:	Александр Вереник
+ * Профиль:	http://livestreet.ru/profile/Wasja/
+ * GitHub:	https://github.com/wasja1982/livestreet_newsocialcomments
+ *
+ * Основан на плагинах:
+ * 1) "OpenComments" (автор: flexbyte, модификации: iMind) - https://catalog.livestreetcms.com/addon/view/39/, https://github.com/iM1nd/opencomments
+ * 2) "Social Comments" (автор: 4ever4you) - https://catalog.livestreetcms.com/addon/view/201/
+ *
  **/
 
 /**
@@ -12,7 +18,7 @@
  *
  */
 
-class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlog
+class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit_ActionBlog
 {
 
 	/**
@@ -30,7 +36,7 @@ class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlo
 			$this->oUserCurrent = $this->User_GetUserById(0);
 			$guest = true;
 
-			if (!Config::Get('plugin.opencomments.enabled') && !getRequest("social")) {
+			if (!Config::Get('plugin.newsocialcomments.enabled') && !getRequest("social")) {
 				$this->Message_AddErrorSingle($this->Lang_Get('not_access'),$this->Lang_Get('error'));
 				return;
 			}
@@ -49,25 +55,25 @@ class PluginOpencomments_ActionBlog extends PluginOpencomments_Inherit_ActionBlo
 			}
 
             if (!func_check(getRequest("guest_name"),"text",2,50)) {
-                $this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_name'),$this->Lang_Get('error'));
+                $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_name'),$this->Lang_Get('error'));
                 return;
             }
 
 			if (!getRequest("social")) {
-				if (Config::Get('plugin.opencomments.ask_mail')) {
+				if (Config::Get('plugin.newsocialcomments.ask_mail')) {
 					if (!func_check(getRequest("guest_email"),"mail")) {
-						$this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_mail'),$this->Lang_Get('error'));
+						$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_mail'),$this->Lang_Get('error'));
 						return;
 					}
 				}
 
 				if (!isset($_SESSION['captcha_keystring']) or $_SESSION['captcha_keystring']!=strtolower(getRequest('captcha'))) {
-					$this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_captcha'),$this->Lang_Get('error'));
+					$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_captcha'),$this->Lang_Get('error'));
 					return;
 				}
 			} else {
 				if (!func_check(getRequest("social_avatar"),"text",1,255) || !func_check(getRequest("social_profile"),"text",1,255)) {
-					$this->Message_AddErrorSingle($this->Lang_Get('plugin.opencomments.opencomments_error_social'),$this->Lang_Get('error'));
+					$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_social'),$this->Lang_Get('error'));
 					return;
 				}
 			}

@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
 	<name>
-		<lang name="default">OpenComments</lang>
+		<lang name="default">New Social Comments</lang>
 	</name>
 	<author>
-		<lang name="default">flexbyte(адаптация iMind)</lang>
+        <lang name="default">Alexandr Verenik, flexbyte, iM1nd</lang>
+        <lang name="russian">Александр Вереник, flexbyte, iM1nd</lang>
 	</author>
-	<homepage>http://livestreet.ru</homepage>
-	<version>1.4.3</version>
+	<homepage>https://github.com/wasja1982/livestreet_newsocialcomments</homepage>
+	<version>1.0.0</version>
 	<requires>
 		<livestreet>1.0.3</livestreet>
 		<plugins>
 		</plugins>
 	</requires>
 	<description>
-		<lang name="default">OpenComments</lang>
-		<lang name="russian">Позволяет посетителям оставлять комментарии без регистрации.</lang>
+		<lang name="default">New Social Comments</lang>
+		<lang name="russian">Позволяет посетителям оставлять комментарии, используя аккаунты социальных сетей.</lang>
 	</description>
 </plugin>

@@ -45,7 +45,7 @@
 			{else}
 			<a href="{$oComment->getGuestProfile()}">{$oComment->getGuestName()}</a>
 			{/if}
-        	&nbsp;&nbsp;<i><small>{$aLang.opencomments_guest}</small></i>
+        	&nbsp;&nbsp;<i><small>{$aLang.newsocialcomments_guest}</small></i>
         </li>
         {else}
         <li class="username"><a href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a></li>
