@@ -20,13 +20,13 @@
 	<div class="folding"></div>
 
 	{if !$oComment->getGuestAvatar() }
-	<a href="{$oUser->getUserWebPath()}"><img src="{$oUser->getProfileAvatarPath(48)}" alt="avatar" class="comment-avatar" /></a>
+		<a href="{$oUser->getUserWebPath()}"><img src="{$oUser->getProfileAvatarPath(48)}" alt="avatar" class="comment-avatar" /></a>
 	{else}
-	{if !$oComment->getGuestProfile()}
-	<img src="{$oComment->getGuestAvatar()}" alt="avatar" class="comment-avatar" />
-	{else}
-	<a href="{$oComment->getGuestProfile()}"><img src="{$oComment->getGuestAvatar()}" alt="avatar" class="comment-avatar" /></a>
-	{/if}
+		{if !$oComment->getGuestProfile()}
+			<img src="{$oComment->getGuestAvatar()}" alt="avatar" class="comment-avatar" />
+		{else}
+			<a href="{$oComment->getGuestProfile()}"><img src="{$oComment->getGuestAvatar()}" alt="avatar" class="comment-avatar" /></a>
+		{/if}
 	{/if}
 		<div id="comment_content_id_{$oComment->getId()}" class="comment-content">
 			<div class=" text">
@@ -39,20 +39,18 @@
 
 
 	<ul class="comment-info">
-	{if !$oUser->getId() }
-    		<li class="comment-author {if $iAuthorId == $oUser->getId()}comment-topic-author{/if}" title="{if $iAuthorId == $oUser->getId() and $sAuthorNotice}{$sAuthorNotice}{/if}">
+   		<li class="comment-author {if $iAuthorId == $oUser->getId()}comment-topic-author{/if}" title="{if $iAuthorId == $oUser->getId() and $sAuthorNotice}{$sAuthorNotice}{/if}">
+			{if !$oUser->getId() }
 				{if !$oComment->getGuestProfile()}
-				<b>{$oComment->getGuestName()}</b>
+					<b>{$oComment->getGuestName()}</b>
 				{else}
-				<a href="{$oComment->getGuestProfile()}">{$oComment->getGuestName()}</a>
+					<a href="{$oComment->getGuestProfile()}">{$oComment->getGuestName()}</a>
 				{/if}
 				&nbsp;&nbsp;&nbsp;<i><small>{$aLang.plugin.newsocialcomments.newsocialcomments_guest}</small></i>
-			</li>
-    {else}
-    		<li class="comment-author {if $iAuthorId == $oUser->getId()}comment-topic-author{/if}" title="{if $iAuthorId == $oUser->getId() and $sAuthorNotice}{$sAuthorNotice}{/if}">
+		    {else}
 				<a href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>
-			</li>
-	{/if}
+			{/if}
+		</li>
 
 
 			<li class="comment-date">
@@ -94,28 +92,35 @@
 					<span class="favourite-count" id="fav_count_comment_{$oComment->getId()}">{if $oComment->getCountFavourite() > 0}{$oComment->getCountFavourite()}{/if}</span>
 				</li>
 			{/if}
+			<li class="comment-link">
+				<a href="{if $oConfig->GetValue('module.comment.nested_per_page')}{router page='comments'}{else}#comment{/if}{$oComment->getId()}" title="{$aLang.comment_url_notice}">
+					<i class="icon-synio-link"></i>
+				</a>
+			</li>
 
 
 			{if $oComment->getPid()}
 				<li class="goto goto-comment-parent"><a href="#" onclick="ls.comments.goToParentComment({$oComment->getId()},{$oComment->getPid()}); return false;" title="{$aLang.comment_goto_parent}">&uarr;</a></li>
 			{/if}
 			<li class="goto goto-comment-child"><a href="#" title="{$aLang.comment_goto_child}">&darr;</a></li>
-
-
+			
+			{if $oUserCurrent or $oConfig->GetValue('plugin.opencomments.enabled')}
 				{if !$oComment->getDelete() and !$bAllowNewComment}
 					<li><a href="#" onclick="ls.comments.toggleCommentForm({$oComment->getId()}); return false;" class="reply-link link-dotted">{$aLang.comment_answer}</a></li>
 				{/if}
 
-				{if !$oComment->getDelete() and $oUserCurrent and $oUserCurrent->isAdministrator()}
-					<li><a href="#" class="comment-delete link-dotted" onclick="ls.comments.toggle(this,{$oComment->getId()}); return false;">{$aLang.comment_delete}</a></li>
-				{/if}
+				{if $oUserCurrent}
+					{if !$oComment->getDelete() and $oUserCurrent and $oUserCurrent->isAdministrator()}
+						<li><a href="#" class="comment-delete link-dotted" onclick="ls.comments.toggle(this,{$oComment->getId()}); return false;">{$aLang.comment_delete}</a></li>
+					{/if}
 
-				{if $oComment->getDelete() and $oUserCurrent and $oUserCurrent->isAdministrator()}
-					<li><a href="#" class="comment-repair link-dotted" onclick="ls.comments.toggle(this,{$oComment->getId()}); return false;">{$aLang.comment_repair}</a></li>
+					{if $oComment->getDelete() and $oUserCurrent and $oUserCurrent->isAdministrator()}
+						<li><a href="#" class="comment-repair link-dotted" onclick="ls.comments.toggle(this,{$oComment->getId()}); return false;">{$aLang.comment_repair}</a></li>
+					{/if}
 				{/if}
-
+				
 				{hook run='comment_action' comment=$oComment}
-
+			{/if}
 		</ul>
 	{else}
 		{$aLang.comment_was_delete}

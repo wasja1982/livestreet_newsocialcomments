@@ -102,7 +102,7 @@
 				<input type="hidden" name="cmt_target_id" value="{$iTargetId}" />
 			</form>
 		</div>
-	{else}
+	{elseif $oConfig->GetValue('plugin.opencomments.enabled')}
 		{include file='editor.tpl' sImgToLoad='form_comment_text' sSettingsTinymce='ls.settings.getTinymceComment()' sSettingsMarkitup='ls.settings.getMarkitupComment()'}
 		
 		<h4 class="reply-header" id="comment_id_0">
@@ -148,6 +148,8 @@
 			</form>
 		</div>
 		
+	{else}
+		{$aLang.comment_unregistered} 
 	{/if}
 {/if}	
 
