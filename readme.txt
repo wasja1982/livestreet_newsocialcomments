@@ -1,4 +1,4 @@
-Плагин "New Social Comments" (версия 1.0.0) для LiveStreet 1.0.3
+Плагин "New Social Comments" (версия 1.0.1) для LiveStreet 1.0.3
 
 Основан на плагинах:
 1) "OpenComments" (автор: flexbyte, модификации: iMind) - https://catalog.livestreetcms.com/addon/view/39/, https://github.com/iM1nd/opencomments
@@ -22,9 +22,14 @@
 
 4) $config['fb_id'] - Идентификатор приложения для Facebook. Уникальный идентификатор для своего сайта необходимо получить по ссылке https://developers.facebook.com/apps/?action=create
 
-5) $config['use_vk_api'] - Разрешить авторизацию через Вконтакте. По умолчанию разрешено (true).
+5) $config['fb_secret'] - Секретный ключ приложения для Facebook.
 
-6) $config['vk_id'] - Идентификатор приложения для Вконтакте. Уникальный идентификатор для своего сайта необходимо получить по ссылке https://vk.com/editapp?act=create
+6) $config['use_vk_api'] - Разрешить авторизацию через Вконтакте. По умолчанию разрешено (true).
+
+7) $config['vk_id'] - Идентификатор приложения для Вконтакте. Уникальный идентификатор для своего сайта необходимо получить по ссылке https://vk.com/editapp?act=create
+
+8) $config['vk_secret'] - Секретный ключ приложения для Вконтакте.
+
 
 
 УСТАНОВКА
