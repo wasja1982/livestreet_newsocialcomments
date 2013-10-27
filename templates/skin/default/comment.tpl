@@ -19,13 +19,13 @@
 
 	<div class="folding"></div>
 
-	{if !$oComment->getGuestAvatar() }
+	{if $oUser->getId() }
 		<a href="{$oUser->getUserWebPath()}"><img src="{$oUser->getProfileAvatarPath(48)}" alt="avatar" class="comment-avatar" /></a>
 	{else}
 		{if !$oComment->getGuestProfile()}
-			<img src="{$oComment->getGuestAvatar()}" alt="avatar" class="comment-avatar" />
+			<img src="{if $oComment->getGuestAvatar()}{$oComment->getGuestAvatar()}{else}{$oUser->getProfileAvatarPath(48)}{/if}" alt="avatar" class="comment-avatar" />
 		{else}
-			<a href="{$oComment->getGuestProfile()}"><img src="{$oComment->getGuestAvatar()}" alt="avatar" class="comment-avatar" /></a>
+			<a href="{$oComment->getGuestProfile()}"><img src="{if $oComment->getGuestAvatar()}{$oComment->getGuestAvatar()}{else}{$oUser->getProfileAvatarPath(48)}{/if}" alt="avatar" class="comment-avatar" /></a>
 		{/if}
 	{/if}
 		<div id="comment_content_id_{$oComment->getId()}" class="comment-content">

@@ -36,7 +36,9 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
 			$this->oUserCurrent = $this->User_GetUserById(0);
 			$guest = true;
 
-			if (!Config::Get('plugin.newsocialcomments.enabled') && !getRequest("social")) {
+			$social_type = getRequest("social");
+
+            if (!Config::Get('plugin.newsocialcomments.enabled') && !$social_type) {
 				$this->Message_AddErrorSingle($this->Lang_Get('not_access'),$this->Lang_Get('error'));
 				return;
 			}
@@ -59,7 +61,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                 return;
             }
 
-			if (!getRequest("social")) {
+			if (!$social_type) {
 				if (Config::Get('plugin.newsocialcomments.ask_mail')) {
 					if (!func_check(getRequest("guest_email"),"mail")) {
 						$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_mail'),$this->Lang_Get('error'));
@@ -72,12 +74,21 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
 					return;
 				}
 			} else {
-				if (!func_check(getRequest("social_avatar"),"text",1,255) || !func_check(getRequest("social_profile"),"text",1,255)) {
+				if ($social_type == "vk" && !func_check(getRequest("social_avatar"),"text",1,255)) {
 					$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_social'),$this->Lang_Get('error'));
 					return;
 				}
 
-                if (!in_array(getRequest("social"), array("vk", "fb")) || (getRequest("social") == "vk" && !$this->checkVkAuth()) || (getRequest("social") == "fb" && !$this->checkFbAuth())) {
+                $social_session = false;
+                switch ($social_type) {
+                    case "vk": 
+                        $social_session = $this->checkVkAuth();
+                        break;
+                    case "fb": 
+                        $social_session = $this->checkFbAuth();
+                        break;
+                }
+                if (!in_array($social_type, array("vk", "fb")) || !$social_session) {
 					$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
 					return;
                 }
@@ -188,8 +199,16 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
 		if ($guest) {
             $oCommentNew->setGuestName(getRequest("guest_name"));
             $oCommentNew->setGuestEmail(getRequest("guest_email"));
-            $oCommentNew->setGuestAvatar(getRequest("social_avatar") ? getRequest("social_avatar") : null);
-            $oCommentNew->setGuestProfile(getRequest("social_profile") ? getRequest("social_profile") : null);
+            if (getRequest("social_avatar")) $oCommentNew->setGuestAvatar(getRequest("social_avatar"));
+            $oCommentNew->setGuestType($social_type);
+            switch ($social_type) {
+                case "vk":
+                    if (isset($social_session['mid'])) $oCommentNew->setGuestId($social_session['mid']);
+                    break;
+                case "fb":
+                    if (isset($social_session['user_id'])) $oCommentNew->setGuestId($social_session['user_id']);
+                    break;
+            }
             unset($_SESSION['captcha_keystring']);
         } else {
 		    $oCommentNew->setGuestName(null);

@@ -27,12 +27,29 @@ class PluginNewsocialcomments_ModuleComment_EntityComment extends PluginNewsocia
 	public function getGuestAvatar() {
 		$extra = $this->getGuestExtra();
 		$extra = (empty($extra) ? array() : unserialize($extra));
-		return (isset($extra['avatar']) ? $extra['avatar'] : '');
+		if (isset($extra['avatar'])) {
+            return $extra['avatar'];
+        } else if (isset($extra['type']) && isset($extra['id'])) {
+            switch ($extra['type']) {
+                case "fb": return 'http://graph.facebook.com/' . $extra['id'] . '/picture';
+            }
+        } else {
+            return null;
+        }
 	}
 	public function getGuestProfile() {
 		$extra = $this->getGuestExtra();
 		$extra = (empty($extra) ? array() : unserialize($extra));
-		return (isset($extra['profile']) ? $extra['profile'] : '');
+        if (isset($extra['profile'])) {
+            return $extra['profile'];
+        } else if (isset($extra['type']) && isset($extra['id'])) {
+            switch ($extra['type']) {
+                case "vk": return 'https://vk.com/id' . $extra['id'];
+                case "fb": return 'https://www.facebook.com/profile.php?id=' . $extra['id'];
+            }
+        } else {
+            return null;
+        }
 	}
 
 	public function setGuestName($data) {
@@ -44,17 +61,23 @@ class PluginNewsocialcomments_ModuleComment_EntityComment extends PluginNewsocia
 	public function setGuestExtra($data) {
 		$this->_aData['guest_extra']=$data;
 	}
-	public function setGuestAvatar($data) {
+	private function setGuestExtraField($field, $data) {
 		$extra = $this->getGuestExtra();
 		$extra = (empty($extra) ? array() : unserialize($extra));
-		$extra['avatar'] = $data;
+		$extra[$field] = $data;
 		$this->setGuestExtra(serialize($extra));
 	}
+	public function setGuestAvatar($data) {
+        $this->setGuestExtraField('avatar', $data);
+	}
 	public function setGuestProfile($data) {
-		$extra = $this->getGuestExtra();
-		$extra = (empty($extra) ? array() : unserialize($extra));
-		$extra['profile'] = $data;
-		$this->setGuestExtra(serialize($extra));
+        $this->setGuestExtraField('profile', $data);
+	}
+	public function setGuestType($data) {
+        $this->setGuestExtraField('type', $data);
+	}
+	public function setGuestId($data) {
+        $this->setGuestExtraField('id', $data);
 	}
 }
 ?>

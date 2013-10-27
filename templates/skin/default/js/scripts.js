@@ -8,8 +8,7 @@ function vk_auth(response) {
             fields:'photo'
         }, function(response){
             var avatar = response.response[0].photo;
-            var profile = 'https://vk.com/id' + response.response[0].uid;
-            fill_form("vk", name, avatar, profile);
+            fill_form("vk", name, avatar);
         });
     } else {
         if (use_fb_api) {
@@ -23,14 +22,12 @@ function facebook_auth(response) {
         var uid = response.authResponse.userID;
 
         FB.api('/me', function(response) {
-            var avatar = 'http://graph.facebook.com/' + response.id + '/picture';
-            var profile = 'https://www.facebook.com/profile.php?id=' + uid;
-            fill_form("fb", response.name, avatar, profile);
+            fill_form("fb", response.name, null);
         });
     }
 }
 
-function fill_form(type, name, avatar, profile) {
+function fill_form(type, name, avatar) {
     $("#guest_name").attr("value",name);
     $("#social_info span.name").text(name);
     $("#social_info span.icon").addClass("small_" + type + "_icon");
@@ -38,8 +35,7 @@ function fill_form(type, name, avatar, profile) {
     $("#social_chooser, #capcha, #guest_input, #guest_email").hide();
     $("#form_comment").append("<input type='hidden' name='social' id='social' value='" + type + "' />");
     $("#sc_exit").addClass(type);
-    $("#form_comment").append("<input type='hidden' name='social_avatar' id='social_avatar' value='"+avatar+"' />");
-    $("#form_comment").append("<input type='hidden' name='social_profile' id='social_profile' value='"+profile+"' />");
+    if (avatar) $("#form_comment").append("<input type='hidden' name='social_avatar' id='social_avatar' value='"+avatar+"' />");
 }
 
 function clear_form(type) {
@@ -56,7 +52,6 @@ function clear_form(type) {
     $("#form_comment").find("#social").remove();
     $("#sc_exit").removeClass(type);
     $("#form_comment").find("#social_avatar").remove();
-    $("#form_comment").find("#social_profile").remove();
 }
 
 $(function() {
