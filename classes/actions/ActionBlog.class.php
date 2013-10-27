@@ -76,6 +76,11 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
 					$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_social'),$this->Lang_Get('error'));
 					return;
 				}
+
+                if (!in_array(getRequest("social"), array("vk", "fb")) || (getRequest("social") == "vk" && !$this->checkVkAuth()) || (getRequest("social") == "fb" && !$this->checkFbAuth())) {
+					$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
+					return;
+                }
 			}
 		}
 
@@ -313,5 +318,61 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
 		$this->Viewer_AssignAjax('iMaxIdComment',$iMaxIdComment);
 		$this->Viewer_AssignAjax('aComments',$aComments);
 	}
+
+	/**
+	 * Проверка авторизации Вконтакте
+	 * http://vk.com/dev/openapi_auth
+	 */
+    function checkVkAuth() {
+        $keys = array('expire', 'mid', 'secret', 'sid');
+        $vk_id = Config::Get('plugin.newsocialcomments.vk_id');
+        $vk_secret = Config::Get('plugin.newsocialcomments.vk_secret');
+        $session = array();
+        if (isset($_COOKIE['vk_app_' . $vk_id])) {
+            $vk_cookie = $_COOKIE['vk_app_' . $vk_id];
+            $session_data = explode ('&', $vk_cookie, 10);
+            foreach ($session_data as $pair) {
+                list($key, $value) = explode('=', $pair, 2);
+                if (!empty($key) && !empty($value)) {
+                    if ($key === 'sig') $sig = $value;
+                    elseif (in_array($key, $keys)) $session[$key] = $value;
+                }
+            }
+            foreach ($keys as $key) {
+                if (!isset($session[$key])) return false;
+            }
+            ksort($session);
+            $sign = '';
+            foreach ($session as $key => $value) {
+                $sign .= ($key . '=' . $value);
+            }
+            $sign = md5($sign . $vk_secret);
+            if ($sig === $sign && $session['expire'] > time()) {
+                return $session;
+            }
+        }
+        return false;
+    }
+
+	/**
+	 * Проверка авторизации Facebook
+	 * https://developers.facebook.com/docs/facebook-login/using-login-with-games/
+	 */
+    function checkFbAuth() {
+        $fb_id = Config::Get('plugin.newsocialcomments.fb_id');
+        $fb_secret = Config::Get('plugin.newsocialcomments.fb_secret');
+        $session = array();
+        if (isset($_COOKIE['fbsr_' . $fb_id])) {
+            $fb_cookie = $_COOKIE['fbsr_' . $fb_id];
+            list($encoded_sig, $session_data) = explode('.', $fb_cookie, 2);
+            $sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
+            $session = json_decode(base64_decode(strtr($session_data, '-_', '+/')), true);
+            $sign = hash_hmac('sha256', $session_data, $fb_secret, $raw = true);
+            if ($sig === $sign) {
+                return $session;
+            }
+        }
+        return false;
+    }
 }
 ?>
