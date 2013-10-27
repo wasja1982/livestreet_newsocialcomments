@@ -81,14 +81,17 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
 
                 $social_session = false;
                 switch ($social_type) {
-                    case "vk": 
+                    case "vk":
                         $social_session = $this->checkVkAuth();
                         break;
-                    case "fb": 
+                    case "fb":
                         $social_session = $this->checkFbAuth();
                         break;
+                    case "mr":
+                        $social_session = $this->checkMrAuth();
+                        break;
                 }
-                if (!in_array($social_type, array("vk", "fb")) || !$social_session) {
+                if (!in_array($social_type, array("vk", "fb", "mr")) || !$social_session) {
 					$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
 					return;
                 }
@@ -197,8 +200,8 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
 		$oCommentNew->setPublish($oTopic->getPublish());
 
 		if ($guest) {
-            $oCommentNew->setGuestName(getRequest("guest_name"));
-            $oCommentNew->setGuestEmail(getRequest("guest_email"));
+            if (getRequest("guest_name")) $oCommentNew->setGuestName(getRequest("guest_name"));
+            if (getRequest("guest_email")) $oCommentNew->setGuestEmail(getRequest("guest_email"));
             if (getRequest("social_avatar")) $oCommentNew->setGuestAvatar(getRequest("social_avatar"));
             $oCommentNew->setGuestType($social_type);
             switch ($social_type) {
@@ -207,6 +210,22 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                     break;
                 case "fb":
                     if (isset($social_session['user_id'])) $oCommentNew->setGuestId($social_session['user_id']);
+                    break;
+                case "mr":
+                    $user_info = $this->getMrUserInfo($social_session);
+                    if (is_array($user_info) && isset($user_info['uid']) && isset($user_info['first_name']) && isset($user_info['last_name'])) {
+                        $oCommentNew->setGuestId($user_info['uid']);
+                        $oCommentNew->setGuestName($user_info['first_name'] . ' ' . $user_info['last_name']);
+                        if (isset($user_info['has_pic']) && $user_info['has_pic'] && isset($user_info['pic']))
+                            $oCommentNew->setGuestAvatar($user_info['pic']);
+                        if (isset($user_info['link']))
+                            $oCommentNew->setGuestProfile($user_info['link']);
+                        if (isset($user_info['email']))
+                            $oCommentNew->setGuestEmail($user_info['email']);
+                    } else {
+                        $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
+                        return;
+                    }
                     break;
             }
             unset($_SESSION['captcha_keystring']);
@@ -360,12 +379,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             foreach ($keys as $key) {
                 if (!isset($session[$key])) return false;
             }
-            ksort($session);
-            $sign = '';
-            foreach ($session as $key => $value) {
-                $sign .= ($key . '=' . $value);
-            }
-            $sign = md5($sign . $vk_secret);
+            $sign = $this->getSign($session, $vk_secret);
             if ($sig === $sign && $session['expire'] > time()) {
                 return $session;
             }
@@ -387,11 +401,69 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             $sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
             $session = json_decode(base64_decode(strtr($session_data, '-_', '+/')), true);
             $sign = hash_hmac('sha256', $session_data, $fb_secret, $raw = true);
-            if ($sig === $sign) {
+            if ($sig === $sign && $session['expires'] > time()) {
                 return $session;
             }
         }
         return false;
+    }
+
+    /**
+	 * Проверка авторизации Mail.ru
+	 * http://api.mail.ru/docs/guides/jsapi/#mailru.session
+	 */
+    function checkMrAuth() {
+        $mr_id = Config::Get('plugin.newsocialcomments.mr_id');
+        $session = array();
+        if (isset($_COOKIE['mrc'])) {
+            $mr_cookie = $_COOKIE['mrc'];
+            $session_data = explode('&', urldecode($mr_cookie), 10);
+            foreach ($session_data as $pair) {
+                list($key, $value) = explode('=', $pair, 2);
+                if (!empty($key) && !empty($value)) {
+                    $session[$key] = $value;
+                }
+            }
+            if ($session['app_id'] == $mr_id && $session['exp'] > time() && $session['is_app_user'] == 1) {
+                return $session;
+            }
+        }
+        return false;
+    }
+
+    /**
+	 * Получение информации о пользователе Mail.ru
+	 * http://api.mail.ru/docs/reference/rest/users.getInfo/#result
+	 */
+    function getMrUserInfo($session) {
+        $mr_id = Config::Get('plugin.newsocialcomments.mr_id');
+        $mr_secret = Config::Get('plugin.newsocialcomments.mr_secret');
+
+        if (isset($session['session_key'])) {
+            $params = array(
+                'method'       => 'users.getInfo',
+                'secure'       => '1',
+                'app_id'       => $mr_id,
+                'session_key'  => $session['session_key'],
+            );
+            $params['sig'] = $this->getSign($params, $mr_secret);
+            $user_info = json_decode(@file_get_contents('http://www.appsmail.ru/platform/api' . '?' . urldecode(http_build_query($params))), true);
+            return (is_array($user_info) && count($user_info) ? $user_info[0] : false);
+        }
+        return false;
+    }
+
+    /**
+	 * Вычисление хеша
+	 *
+	 */
+    function getSign(array $keys, $secret_key) {
+        ksort($keys);
+        $params = '';
+        foreach ($keys as $key => $value) {
+            $params .= ($key . '=' . $value);
+        }
+        return md5($params . $secret_key);
     }
 }
 ?>

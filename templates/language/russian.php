@@ -25,6 +25,7 @@ return array(
 	'newsocialcomments_comment' => 'Комментировать при помощи',
 	'newsocialcomments_comment_vk' => 'Комментировать, используя профиль ВКонтакте',
 	'newsocialcomments_comment_fb' => 'Комментировать, используя профиль Facebook',
+	'newsocialcomments_comment_mr' => 'Комментировать, используя профиль Mail.ru',
 	'newsocialcomments_hello' => 'Здравствуйте, ',
 	'newsocialcomments_exit' => 'Выйти',
 

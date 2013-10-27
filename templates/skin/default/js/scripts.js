@@ -13,6 +13,8 @@ function vk_auth(response) {
     } else {
         if (use_fb_api) {
             FB.getLoginStatus(facebook_auth, true);
+        } else if (use_mr_api) {
+            mailru.connect.getLoginStatus(mr_auth);
         }
     }
 }
@@ -24,6 +26,20 @@ function facebook_auth(response) {
         FB.api('/me', function(response) {
             fill_form("fb", response.name, null);
         });
+    } else {
+        if (use_mr_api) {
+            mailru.connect.getLoginStatus(mr_auth);
+        }
+    }
+}
+
+function mr_auth(response) {
+    if (use_mr_api && response.is_app_user == 1) {
+        mailru.common.users.getInfo(function(user_list) {
+            var name = user_list[0].first_name + ' ' + user_list[0].last_name
+            
+            fill_form("mr", name, null);
+        }, response.vid);
     }
 }
 
@@ -33,9 +49,12 @@ function fill_form(type, name, avatar) {
     $("#social_info span.icon").addClass("small_" + type + "_icon");
     $("#social_info, #guest_text").show();
     $("#social_chooser, #capcha, #guest_input, #guest_email").hide();
-    $("#form_comment").append("<input type='hidden' name='social' id='social' value='" + type + "' />");
+    if ($("#form_comment > input#social").length) $("#form_comment > input#social").attr("value", type);
+    else $("#form_comment").append("<input type='hidden' name='social' id='social' value='" + type + "' />");
     $("#sc_exit").addClass(type);
-    if (avatar) $("#form_comment").append("<input type='hidden' name='social_avatar' id='social_avatar' value='"+avatar+"' />");
+    if (avatar) 
+        if ($("#form_comment > input#social_avatar").length) $("#form_comment > input#social_avatar").attr("value", avatar);
+        else $("#form_comment").append("<input type='hidden' name='social_avatar' id='social_avatar' value='"+avatar+"' />");
 }
 
 function clear_form(type) {
@@ -75,6 +94,21 @@ $(function() {
             oauth: true
         });
     }
+    if (use_mr_api) {
+        mailru.loader.require('api', function() {
+            mailru.connect.init(mr_id, mr_private);
+            mailru.events.listen(mailru.connect.events.login, function(){
+                mailru.connect.getLoginStatus(mr_auth);
+            });
+            mailru.events.listen(mailru.connect.events.logout, function(){
+                if (use_fb_api) {
+                    FB.getLoginStatus(facebook_auth, true);
+                } else if (use_vk_api) {
+                    VK.Auth.getLoginStatus(vk_auth, true);
+                }
+            });
+        });
+    }
     $('.login.small_vk_icon').live("click",function(){
         VK.Auth.login(vk_auth, 0);
         return false
@@ -83,8 +117,12 @@ $(function() {
         FB.login(function(){
             FB.getLoginStatus(facebook_auth, true);
         }, {
-            scope : ''
+            scope: '' /* 'email' */
         })
+        return false
+    });
+    $('.login.small_mr_icon').live("click",function(){
+        mailru.connect.login([]);
         return false
     });
     $('#sc_exit.vk').live("click",function(){
@@ -92,6 +130,8 @@ $(function() {
         VK.Auth.logout(function(){
             if (use_fb_api) {
                 FB.getLoginStatus(facebook_auth, true);
+            } else if (use_mr_api) {
+                mailru.connect.getLoginStatus(mr_auth);
             }
         });
         return false;
@@ -99,15 +139,24 @@ $(function() {
     $('#sc_exit.fb').live("click",function(){
         clear_form("fb");
         FB.logout(function(){
-            if (use_vk_api) {
+            if (use_mr_api) {
+                mailru.connect.getLoginStatus(mr_auth);
+            } else if (use_vk_api) {
                 VK.Auth.getLoginStatus(vk_auth, true);
             }
         });
+        return false;
+    });
+    $('#sc_exit.mr').live("click",function(){
+        clear_form("mr");
+        mailru.connect.logout();
         return false;
     });
     if (use_vk_api) {
         VK.Auth.getLoginStatus(vk_auth, true);
     } else if (use_fb_api) {
         FB.getLoginStatus(facebook_auth, true);
+    } else if (use_mr_api) {
+        mailru.connect.getLoginStatus(mr_auth);
     }
 });
