@@ -401,7 +401,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             $sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
             $session = json_decode(base64_decode(strtr($session_data, '-_', '+/')), true);
             $sign = hash_hmac('sha256', $session_data, $fb_secret, $raw = true);
-            if ($sig === $sign && $session['expires'] > time()) {
+            if ($sig === $sign && (!isset($session['expires']) || $session['expires'] > time())) {
                 return $session;
             }
         }
@@ -424,7 +424,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                     $session[$key] = $value;
                 }
             }
-            if ($session['app_id'] == $mr_id && $session['exp'] > time() && $session['is_app_user'] == 1) {
+            if ($session['app_id'] == $mr_id && isset($session['exp']) && $session['exp'] > time() && isset($session['is_app_user']) && $session['is_app_user'] == 1) {
                 return $session;
             }
         }
