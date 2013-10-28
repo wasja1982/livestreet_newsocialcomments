@@ -206,10 +206,28 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             $oCommentNew->setGuestType($social_type);
             switch ($social_type) {
                 case "vk":
-                    if (isset($social_session['mid'])) $oCommentNew->setGuestId($social_session['mid']);
+                    $user_info = $this->getVkUserInfo($social_session);
+                    if (is_array($user_info) && isset($user_info['uid']) && isset($user_info['first_name']) && isset($user_info['last_name'])) {
+                        $oCommentNew->setGuestId($user_info['uid']);
+                        $oCommentNew->setGuestName($user_info['first_name'] . ' ' . $user_info['last_name']);
+                        if (isset($user_info['photo']))
+                            $oCommentNew->setGuestAvatar($user_info['photo']);
+                    } else {
+                        $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
+                        return;
+                    }
                     break;
                 case "fb":
-                    if (isset($social_session['user_id'])) $oCommentNew->setGuestId($social_session['user_id']);
+                    $user_info = $this->getFbUserInfo($social_session);
+                    if (is_array($user_info) && isset($user_info['id']) && isset($user_info['name'])) {
+                        $oCommentNew->setGuestId($user_info['id']);
+                        $oCommentNew->setGuestName($user_info['name']);
+                        if (isset($user_info['email']))
+                            $oCommentNew->setGuestEmail($user_info['email']);
+                    } else {
+                        $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
+                        return;
+                    }
                     break;
                 case "mr":
                     $user_info = $this->getMrUserInfo($social_session);
@@ -427,6 +445,43 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             if ($session['app_id'] == $mr_id && isset($session['exp']) && $session['exp'] > time() && isset($session['is_app_user']) && $session['is_app_user'] == 1) {
                 return $session;
             }
+        }
+        return false;
+    }
+
+    /**
+	 * Получение информации о пользователе Вконтакте
+	 * http://vk.com/pages.php?o=-1&p=getProfiles
+	 */
+    function getVkUserInfo($session) {
+        if (isset($session['mid'])) {
+            $params = array(
+                'uids'      => $session['mid'],
+                'fields'    => 'photo',
+                'v'         => '4.0',
+            );
+            $user_info = json_decode(@file_get_contents('https://api.vk.com/method/getProfiles' . '?' . urldecode(http_build_query($params))), true);
+            return (is_array($user_info) && isset($user_info['response']) && is_array($user_info['response']) && count($user_info['response']) ? $user_info['response'][0] : false);
+        }
+        return false;
+    }
+
+    /**
+	 * Получение информации о пользователе Facebook
+	 * http://developers.facebook.com/docs/facebook-login/access-tokens/
+	 */
+    function getFbUserInfo($session) {
+        $fb_id = Config::Get('plugin.newsocialcomments.fb_id');
+        $fb_secret = Config::Get('plugin.newsocialcomments.fb_secret');
+
+        if (isset($session['user_id'])) {
+            $params = array(
+                'fields'        => 'id,name,email',
+                'access_token'  => $fb_id . '|' . $fb_secret,
+                'format'        => 'json',
+            );
+            $user_info = json_decode(@file_get_contents("https://graph.facebook.com/{$session['user_id']}" . '?' . urldecode(http_build_query($params))), true);
+            return (is_array($user_info) ? $user_info : false);
         }
         return false;
     }
