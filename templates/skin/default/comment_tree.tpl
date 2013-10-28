@@ -7,6 +7,9 @@
 
 {hook run='comment_tree_begin' iTargetId=$iTargetId sTargetType=$sTargetType}
 
+{if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api') or $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}
+	<script src="{$oConfig->GetValue('plugin.newsocialcomments.webpath')}js/scripts.js" type="text/javascript"></script>
+{/if}
 {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}
 	<script src="http://vkontakte.ru/js/api/openapi.js" type="text/javascript"></script>
 {/if}

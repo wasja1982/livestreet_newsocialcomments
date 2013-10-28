@@ -47,9 +47,6 @@ class PluginNewsocialcomments extends Plugin {
 	 * Инициализация плагина
 	 */
 	public function Init() {
-        if (Config::Get('plugin.newsocialcomments.use_vk_api') || Config::Get('plugin.newsocialcomments.use_fb_api') || Config::Get('plugin.newsocialcomments.use_mr_api')) {
-            $this->Viewer_AppendScript(Plugin::GetTemplatePath(__CLASS__)."js/scripts.js");
-        }
         Config::Set('plugin.newsocialcomments.webpath', Plugin::GetTemplateWebPath(__CLASS__));
 	}
 }
