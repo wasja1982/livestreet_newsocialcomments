@@ -2,7 +2,7 @@
 /**
  * New Social Comments - плагин для социальных комментариев
  *
- * Версия:	1.0.0
+ * Версия:	1.0.2
  * Автор:	Александр Вереник
  * Профиль:	http://livestreet.ru/profile/Wasja/
  * GitHub:	https://github.com/wasja1982/livestreet_newsocialcomments
@@ -74,7 +74,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
 					return;
 				}
 			} else {
-				if ($social_type == "vk" && !func_check(getRequest("social_avatar"),"text",1,255)) {
+				if (($social_type == "vk" && !func_check(getRequest("social_avatar"),"text",1,255)) || ($social_type == "mr" && !func_check(getRequest("social_profile"),"text",1,255))) {
 					$this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_social'),$this->Lang_Get('error'));
 					return;
 				}
@@ -203,46 +203,59 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             if (getRequest("guest_name")) $oCommentNew->setGuestName(getRequest("guest_name"));
             if (getRequest("guest_email")) $oCommentNew->setGuestEmail(getRequest("guest_email"));
             if (getRequest("social_avatar")) $oCommentNew->setGuestAvatar(getRequest("social_avatar"));
+            if (getRequest("social_profile")) $oCommentNew->setGuestProfile(getRequest("social_profile"));
             $oCommentNew->setGuestType($social_type);
             switch ($social_type) {
                 case "vk":
-                    $user_info = $this->getVkUserInfo($social_session);
-                    if (is_array($user_info) && isset($user_info['uid']) && isset($user_info['first_name']) && isset($user_info['last_name'])) {
-                        $oCommentNew->setGuestId($user_info['uid']);
-                        $oCommentNew->setGuestName($user_info['first_name'] . ' ' . $user_info['last_name']);
-                        if (isset($user_info['photo']))
-                            $oCommentNew->setGuestAvatar($user_info['photo']);
+                    if (Config::Get('plugin.newsocialcomments.use_server_check')) {
+                        $user_info = $this->getVkUserInfo($social_session);
+                        if (is_array($user_info) && isset($user_info['uid']) && isset($user_info['first_name']) && isset($user_info['last_name'])) {
+                            $oCommentNew->setGuestId($user_info['uid']);
+                            $oCommentNew->setGuestName($user_info['first_name'] . ' ' . $user_info['last_name']);
+                            if (isset($user_info['photo']))
+                                $oCommentNew->setGuestAvatar($user_info['photo']);
+                        } else {
+                            $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
+                            return;
+                        }
                     } else {
-                        $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
-                        return;
+                        $oCommentNew->setGuestId($social_session['mid']);
                     }
                     break;
                 case "fb":
-                    $user_info = $this->getFbUserInfo($social_session);
-                    if (is_array($user_info) && isset($user_info['id']) && isset($user_info['name'])) {
-                        $oCommentNew->setGuestId($user_info['id']);
-                        $oCommentNew->setGuestName($user_info['name']);
-                        if (isset($user_info['email']))
-                            $oCommentNew->setGuestEmail($user_info['email']);
+                    if (Config::Get('plugin.newsocialcomments.use_server_check')) {
+                        $user_info = $this->getFbUserInfo($social_session);
+                        if (is_array($user_info) && isset($user_info['id']) && isset($user_info['name'])) {
+                            $oCommentNew->setGuestId($user_info['id']);
+                            $oCommentNew->setGuestName($user_info['name']);
+                            if (isset($user_info['email']))
+                                $oCommentNew->setGuestEmail($user_info['email']);
+                        } else {
+                            $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
+                            return;
+                        }
                     } else {
-                        $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
-                        return;
+                        $oCommentNew->setGuestId($social_session['user_id']);
                     }
                     break;
                 case "mr":
-                    $user_info = $this->getMrUserInfo($social_session);
-                    if (is_array($user_info) && isset($user_info['uid']) && isset($user_info['first_name']) && isset($user_info['last_name'])) {
-                        $oCommentNew->setGuestId($user_info['uid']);
-                        $oCommentNew->setGuestName($user_info['first_name'] . ' ' . $user_info['last_name']);
-                        if (isset($user_info['has_pic']) && $user_info['has_pic'] && isset($user_info['pic']))
-                            $oCommentNew->setGuestAvatar($user_info['pic']);
-                        if (isset($user_info['link']))
-                            $oCommentNew->setGuestProfile($user_info['link']);
-                        if (isset($user_info['email']))
-                            $oCommentNew->setGuestEmail($user_info['email']);
+                    if (Config::Get('plugin.newsocialcomments.use_server_check')) {
+                        $user_info = $this->getMrUserInfo($social_session);
+                        if (is_array($user_info) && isset($user_info['uid']) && isset($user_info['first_name']) && isset($user_info['last_name'])) {
+                            $oCommentNew->setGuestId($user_info['uid']);
+                            $oCommentNew->setGuestName($user_info['first_name'] . ' ' . $user_info['last_name']);
+                            if (isset($user_info['has_pic']) && $user_info['has_pic'] && isset($user_info['pic']))
+                                $oCommentNew->setGuestAvatar($user_info['pic']);
+                            if (isset($user_info['link']))
+                                $oCommentNew->setGuestProfile($user_info['link']);
+                            if (isset($user_info['email']))
+                                $oCommentNew->setGuestEmail($user_info['email']);
+                        } else {
+                            $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
+                            return;
+                        }
                     } else {
-                        $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_auth'),$this->Lang_Get('error'));
-                        return;
+                        $oCommentNew->setGuestId($social_session['vid']);
                     }
                     break;
             }
@@ -398,7 +411,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                 if (!isset($session[$key])) return false;
             }
             $sign = $this->getSign($session, $vk_secret);
-            if ($sig === $sign && $session['expire'] > time()) {
+            if ($sig === $sign && $session['expire'] > time() && isset($session['mid'])) {
                 return $session;
             }
         }
@@ -419,7 +432,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             $sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
             $session = json_decode(base64_decode(strtr($session_data, '-_', '+/')), true);
             $sign = hash_hmac('sha256', $session_data, $fb_secret, $raw = true);
-            if ($sig === $sign && (!isset($session['expires']) || $session['expires'] > time())) {
+            if ($sig === $sign && (!isset($session['expires']) || $session['expires'] > time()) && isset($session['user_id'])) {
                 return $session;
             }
         }
@@ -442,7 +455,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                     $session[$key] = $value;
                 }
             }
-            if ($session['app_id'] == $mr_id && isset($session['exp']) && $session['exp'] > time() && isset($session['is_app_user']) && $session['is_app_user'] == 1) {
+            if ($session['app_id'] == $mr_id && isset($session['exp']) && $session['exp'] > time() && isset($session['is_app_user']) && $session['is_app_user'] == 1 && isset($session['vid'])) {
                 return $session;
             }
         }

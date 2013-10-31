@@ -27,6 +27,7 @@
 	var mr_id = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.mr_id')}{literal}';
 	var mr_private = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.mr_private')}{literal}';
 	var guest_enabled = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.enabled')}true{else}false{/if}{literal};
+	var use_auto_login = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_auto_login')}true{else}false{/if}{literal};
 	var use_vk_api = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}true{else}false{/if}{literal};
 	var use_fb_api = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}true{else}false{/if}{literal};
 	var use_mr_api = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}true{else}false{/if}{literal};

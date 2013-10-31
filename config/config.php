@@ -2,7 +2,7 @@
 /**
  * New Social Comments - плагин для социальных комментариев
  *
- * Версия:	1.0.0
+ * Версия:	1.0.2
  * Автор:	Александр Вереник
  * Профиль:	http://livestreet.ru/profile/Wasja/
  * GitHub:	https://github.com/wasja1982/livestreet_newsocialcomments
@@ -19,6 +19,13 @@ $config['enabled']=true;
 
 // Запрашивать e-mail
 $config['ask_mail']=true;
+
+// Дополнительная защита от подмены данных на клиенте - запрашиваются информация о пользователе напрямую в соцсети.
+// Замедляет скорость добавления комментариев.
+$config['use_server_check']=true;
+
+// Автоматическая проверка авторизации при загрузке страницы
+$config['use_auto_login']=true;
 
 // Разрешить авторизацию через Facebook
 $config['use_fb_api']=true;
