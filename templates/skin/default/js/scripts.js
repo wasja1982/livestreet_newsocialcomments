@@ -84,7 +84,7 @@ function clear_form(type) {
     $("#form_comment").find("#social_avatar").remove();
 }
 
-$(function() {
+jQuery(document).ready(function() {
     $("#social_info").hide();
     $("#social_chooser").show();
     if (guest_enabled) {

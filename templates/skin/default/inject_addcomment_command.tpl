@@ -1,12 +1,4 @@
-{add_block group='toolbar' name='toolbar_comment.tpl'
-	aPagingCmt=$aPagingCmt
-	iTargetId=$iTargetId
-	sTargetType=$sTargetType
-	iMaxIdComment=$iMaxIdComment
-}
-
-{hook run='comment_tree_begin' iTargetId=$iTargetId sTargetType=$sTargetType}
-
+{if !$bAllowNewComment}
 {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api') or $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}
 	<script src="{$oConfig->GetValue('plugin.newsocialcomments.webpath')}js/scripts.js" type="text/javascript"></script>
 {/if}
@@ -41,133 +33,71 @@
 	#social_info .name {padding-left:3px;}
 </style>
 {/literal}
+<script type="text/javascript">
+    jQuery(document).ready(function($){
+        {foreach from=$aComments item=oComment}
+            {if !$oComment->getDelete()}
+                $("div#comment_wrapper_id_{$oComment->getId()} ul.comment-info").first().append('<li><a href="#" onclick="ls.comments.toggleCommentForm({$oComment->getId()}); return false;" class="reply-link link-dotted">{$aLang.comment_answer}</a></li>');
+            {/if}
+        {/foreach}
+        $("div#content:contains('{$sNoticeCommentUnregistered}')")
+        .contents()
+        .filter(function(){
+            return this.nodeType === 3;
+        })
+        .filter(function(){
+            return this.nodeValue.indexOf('{$sNoticeCommentUnregistered}') != -1;
+        })
+        .each(function(){
+            this.nodeValue = '';
+        });
+    });
+</script>
+{include file='editor.tpl' sImgToLoad='form_comment_text' sSettingsTinymce='ls.settings.getTinymceComment()' sSettingsMarkitup='ls.settings.getMarkitupComment()'}
 
-<div class="comments" id="comments">
-	<header class="comments-header">
-		<h3><span id="count-comments">{$iCountComment}</span> {$iCountComment|declension:$aLang.comment_declension:'russian'}</h3>
-		
-		{if $bAllowSubscribe and $oUserCurrent}
-			<div class="subscribe">
-				<input {if $oSubscribeComment and $oSubscribeComment->getStatus()}checked="checked"{/if} type="checkbox" id="comment_subscribe" class="input-checkbox" onchange="ls.subscribe.toggle('{$sTargetType}_new_comment','{$iTargetId}','',this.checked);">
-				<label for="comment_subscribe">{$aLang.comment_subscribe}</label>
-			</div>
-		{/if}
-	
-		<a name="comments"></a>
-	</header>
+<h4 class="reply-header" id="comment_id_0">
+    <a href="#" class="link-dotted" onclick="ls.comments.toggleCommentForm(0);document.getElementById('commentCaptcha').src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random(); return false;">{$sNoticeCommentAdd}</a>
+</h4>
+<div id="reply" class="reply">
+    <form method="post" id="form_comment" onsubmit="return false;" enctype="multipart/form-data">
+        {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}
+            <div id="social_chooser">
+                {$aLang.plugin.newsocialcomments.newsocialcomments_comment}:
+                {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}<a class="small_vk_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_vk}"></a>{/if}
+                {if $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}<a class="small_fb_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_fb}"></a>{/if}
+                {if $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}<a class="small_mr_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_mr}"></a>{/if}
+            </div>
+            <div id="social_info" style="display:none">
+                {$aLang.plugin.newsocialcomments.newsocialcomments_hello}<span class="icon"></span> <span class="name"></span>
+                (<a href="" id="sc_exit">{$aLang.plugin.newsocialcomments.newsocialcomments_exit}</a>)
+            </div>
+        {/if}
+        <div id="guest_input" style="padding-top:15px; padding-bottom:5px;"><b>{$aLang.plugin.newsocialcomments.newsocialcomments_name}:</b><input type="text" id="guest_name" class="input-text" name="guest_name" value="" style="width:200px;margin-left: 18px;" /></div>
+        {if $oConfig->GetValue('plugin.newsocialcomments.ask_mail')}
+        <div id="guest_email" style="padding-bottom:10px;"><b>E-Mail:</b> <input type="text" class="input-text" name="guest_email" value="" style="width:200px;" /> </div>
+        {/if}
 
-	{assign var="nesting" value="-1"}
-	{foreach from=$aComments item=oComment name=rublist}
-		{assign var="cmtlevel" value=$oComment->getLevel()}
-		
-		{if $cmtlevel>$oConfig->GetValue('module.comment.max_tree')}
-			{assign var="cmtlevel" value=$oConfig->GetValue('module.comment.max_tree')}
-		{/if}
-		
-		{if $nesting < $cmtlevel} 
-		{elseif $nesting > $cmtlevel}
-			{section name=closelist1  loop=$nesting-$cmtlevel+1}</div>{/section}
-		{elseif not $smarty.foreach.rublist.first}
-			</div>
-		{/if}
-		
-		<div class="comment-wrapper" id="comment_wrapper_id_{$oComment->getId()}">
-		
-		{include file='comment.tpl'} 
-		{assign var="nesting" value=$cmtlevel}
-		{if $smarty.foreach.rublist.last}
-			{section name=closelist2 loop=$nesting+1}</div>{/section}    
-		{/if}
-	{/foreach}
-</div>				
-	
-	
-{include file='comment_paging.tpl' aPagingCmt=$aPagingCmt}
+        <div id="guest_text">
+        {hook run='form_add_comment_begin'}
 
-{hook run='comment_tree_end' iTargetId=$iTargetId sTargetType=$sTargetType}
+        <textarea name="comment_text" id="form_comment_text" class="mce-editor markitup-editor input-width-full"></textarea>
 
-{if $bAllowNewComment}
-	{$sNoticeNotAllow}
-{else}
-	{if $oUserCurrent}
+        {hook run='form_add_comment_end'}
 
-		{include file='editor.tpl' sImgToLoad='form_comment_text' sSettingsTinymce='ls.settings.getTinymceComment()' sSettingsMarkitup='ls.settings.getMarkitupComment()'}
-	
-		<h4 class="reply-header" id="comment_id_0">
-			<a href="#" class="link-dotted" onclick="ls.comments.toggleCommentForm(0); return false;">{$sNoticeCommentAdd}</a>
-		</h4>
-		
-		
-		<div id="reply" class="reply">		
-			<form method="post" id="form_comment" onsubmit="return false;" enctype="multipart/form-data">
-				{hook run='form_add_comment_begin'}
-				
-				<textarea name="comment_text" id="form_comment_text" class="mce-editor markitup-editor input-width-full"></textarea>
-				
-				{hook run='form_add_comment_end'}
-				
-				<button type="submit"  name="submit_comment" 
-						id="comment-button-submit" 
-						onclick="ls.comments.add('form_comment',{$iTargetId},'{$sTargetType}'); return false;" 
-						class="button button-primary">{$aLang.comment_add}</button>
-				<button type="button" onclick="ls.comments.preview();" class="button">{$aLang.comment_preview}</button>
-				
-				<input type="hidden" name="reply" value="0" id="form_comment_reply" />
-				<input type="hidden" name="cmt_target_id" value="{$iTargetId}" />
-			</form>
-		</div>
-	{elseif $oConfig->GetValue('plugin.newsocialcomments.enabled') or $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}
-		{include file='editor.tpl' sImgToLoad='form_comment_text' sSettingsTinymce='ls.settings.getTinymceComment()' sSettingsMarkitup='ls.settings.getMarkitupComment()'}
-		
-		<h4 class="reply-header" id="comment_id_0">
-			<a href="#" class="link-dotted" onclick="ls.comments.toggleCommentForm(0);document.getElementById('commentCaptcha').src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random(); return false;">{$sNoticeCommentAdd}</a>
-		</h4>	
-		<div id="reply" class="reply">
-			<form method="post" id="form_comment" onsubmit="return false;" enctype="multipart/form-data">	
-                {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}
-                    <div id="social_chooser">
-                        {$aLang.plugin.newsocialcomments.newsocialcomments_comment}:
-                        {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}<a class="small_vk_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_vk}"></a>{/if}
-                        {if $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}<a class="small_fb_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_fb}"></a>{/if}
-                        {if $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}<a class="small_mr_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_mr}"></a>{/if}
-                    </div>
-                    <div id="social_info" style="display:none">
-                        {$aLang.plugin.newsocialcomments.newsocialcomments_hello}<span class="icon"></span> <span class="name"></span>
-                        (<a href="" id="sc_exit">{$aLang.plugin.newsocialcomments.newsocialcomments_exit}</a>)
-                    </div>
-                {/if}
-          		<div id="guest_input" style="padding-top:15px; padding-bottom:5px;"><b>{$aLang.plugin.newsocialcomments.newsocialcomments_name}:</b><input type="text" id="guest_name" class="input-text" name="guest_name" value="" style="width:200px;margin-left: 18px;" /></div>
-          		{if $oConfig->GetValue('plugin.newsocialcomments.ask_mail')}
-          		<div id="guest_email" style="padding-bottom:10px;"><b>E-Mail:</b> <input type="text" class="input-text" name="guest_email" value="" style="width:200px;" /> </div>
-          		{/if}
-          		
-                <div id="guest_text">
-				{hook run='form_add_comment_begin'}
-				
-				<textarea name="comment_text" id="form_comment_text" class="mce-editor markitup-editor input-width-full"></textarea>
-				
-				{hook run='form_add_comment_end'}
-          
-          		<div id="capcha" style="padding-top:15px;">
-						<b>{$aLang.plugin.newsocialcomments.newsocialcomments_captcha}:</b><br />
-						<img src="{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}" id="commentCaptcha" onclick="this.src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random();"><br />
-						<input type="text" name="captcha" value="" size="9" class="input-text" style="text-align: center;width:80px;"><br /><br />
-				</div>
-				<button type="submit"  name="submit_comment" 
-						id="comment-button-submit" 
-						onclick="ls.comments.add('form_comment',{$iTargetId},'{$sTargetType}'); return false;" 
-						class="button button-primary">{$aLang.comment_add}</button>
-				<button type="button" onclick="ls.comments.preview();" class="button">{$aLang.comment_preview}</button>
-                </div>
-				
-				<input type="hidden" name="reply" value="0" id="form_comment_reply" />
-				<input type="hidden" name="cmt_target_id" value="{$iTargetId}" />
-			</form>
-		</div>
-		
-	{else}
-		{$aLang.comment_unregistered} 
-	{/if}
-{/if}	
+        <div id="capcha" style="padding-top:15px;">
+                <b>{$aLang.plugin.newsocialcomments.newsocialcomments_captcha}:</b><br />
+                <img src="{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}" id="commentCaptcha" onclick="this.src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random();"><br />
+                <input type="text" name="captcha" value="" size="9" class="input-text" style="text-align: center;width:80px;"><br /><br />
+        </div>
+        <button type="submit"  name="submit_comment"
+                id="comment-button-submit"
+                onclick="ls.comments.add('form_comment',{$iTargetId},'{$sTargetType}'); return false;"
+                class="button button-primary">{$aLang.comment_add}</button>
+        <button type="button" onclick="ls.comments.preview();" class="button">{$aLang.comment_preview}</button>
+        </div>
 
-
+        <input type="hidden" name="reply" value="0" id="form_comment_reply" />
+        <input type="hidden" name="cmt_target_id" value="{$iTargetId}" />
+    </form>
+</div>
+{/if}
