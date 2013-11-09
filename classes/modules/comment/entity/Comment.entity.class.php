@@ -15,7 +15,23 @@
 
 class PluginNewsocialcomments_ModuleComment_EntityComment extends PluginNewsocialcomments_Inherit_ModuleComment_EntityComment
 {
-	public function getGuestName() {
+	/**
+	 * Возвращает объект пользователя
+	 *
+	 * @return ModuleUser_EntityUser|null
+	 */
+	public function getUser() {
+        $oUser = parent::getUser();
+        if ($oUser && $oUser->getId() == 0) {
+            $oUser->setGuestName($this->getGuestName());
+            $oUser->setGuestEmail($this->getGuestEmail());
+            $oUser->setGuestAvatar($this->getGuestAvatar());
+            $oUser->setGuestProfile($this->getGuestProfile());
+        }
+		return $oUser;
+	}
+
+    public function getGuestName() {
 		return (isset($this->_aData['guest_name']) ? $this->_aData['guest_name'] : '');
 	}
 	public function getGuestEmail() {

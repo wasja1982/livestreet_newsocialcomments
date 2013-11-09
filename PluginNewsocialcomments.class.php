@@ -22,17 +22,12 @@ if (!class_exists('Plugin')) {
 
 class PluginNewsocialcomments extends Plugin {
 
-	protected $aDelegates = array(
-		'template' => array('comment_tree.tpl' => '_comment_tree.tpl', 'comment.tpl' => '_comment.tpl', 
-		                    'blocks/block.stream_comment.tpl' => '_blocks/block.stream_comment.tpl', 'comment_list.tpl' => '_comment_list.tpl'),
-	);
-	
 	protected $aInherits = array(
-        'action' => array('ActionBlog','ActionAjax','ActionRss'),
+        'action' => array('ActionBlog','ActionAjax'),
 		'mapper' => array('ModuleComment_MapperComment'),
-        'entity' => array('ModuleComment_EntityComment')
+        'entity' => array('ModuleComment_EntityComment','ModuleUser_EntityUser')
     );
-	
+
 	/**
 	 * Активация плагина
 	 */
@@ -42,7 +37,7 @@ class PluginNewsocialcomments extends Plugin {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Инициализация плагина
 	 */
