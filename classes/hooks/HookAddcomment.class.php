@@ -14,6 +14,9 @@ class PluginNewsocialcomments_HookAddcomment extends Hook
     public function RegisterHook()
     {
         $this->AddHook('template_comment_tree_end', 'InjectAddLink');
+        if (Config::Get('plugin.newsocialcomments.show_icon')) {
+            $this->AddHook('template_comment_tree_end', 'InjectIcon');
+        }
     }
 
     public function InjectAddLink($aParam)
@@ -34,6 +37,14 @@ class PluginNewsocialcomments_HookAddcomment extends Hook
                     $this->Viewer_Assign('sNoticeCommentAdd', $this->Lang_Get('topic_comment_add'));
                     return $this->Viewer_Fetch($sTemplatePath);
             }
+        }
+    }
+
+    public function InjectIcon($aParam)
+    {
+        $sTemplatePath = Plugin::GetTemplatePath(__CLASS__) . 'inject_comment_icon.tpl';
+        if ($this->Viewer_TemplateExists($sTemplatePath)) {
+            return $this->Viewer_Fetch($sTemplatePath);
         }
     }
 }

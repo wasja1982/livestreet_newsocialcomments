@@ -67,6 +67,15 @@ class PluginNewsocialcomments_ModuleComment_EntityComment extends PluginNewsocia
             return null;
         }
 	}
+    public function getGuestType() {
+        if ($this->getUserId() != 0) {
+            return "user";
+        } else {
+            $extra = $this->getGuestExtra();
+            $extra = (empty($extra) ? array() : unserialize($extra));
+            return (isset($extra['type']) && !empty($extra['type']) ? $extra['type'] : "guest");
+        }
+	}
 
 	public function setGuestName($data) {
 		$this->_aData['guest_name']=$data;
