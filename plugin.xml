@@ -8,7 +8,7 @@
         <lang name="russian">Александр Вереник, flexbyte, iM1nd</lang>
 	</author>
 	<homepage>https://github.com/wasja1982/livestreet_newsocialcomments</homepage>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<requires>
 		<livestreet>1.0.3</livestreet>
 		<plugins>

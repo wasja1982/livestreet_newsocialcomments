@@ -1,4 +1,4 @@
-Плагин "New Social Comments" (версия 1.0.2) для LiveStreet 1.0.3
+Плагин "New Social Comments" (версия 1.0.3) для LiveStreet 1.0.3
 
 Основан на плагинах:
 1) "OpenComments" (автор: flexbyte, модификации: iMind) - https://catalog.livestreetcms.com/addon/view/39/, https://github.com/iM1nd/opencomments
@@ -70,6 +70,9 @@ ALTER TABLE `prefix_comment`
 
 
 ИЗМЕНЕНИЯ:
+1.0.3 (10.11.2013):
+- Работа плагина переделана на использование хуков вместо делегации файлов шаблона.
+
 1.0.2 (31.10.2013):
 - Добавлена поддержка авторизации Mail.ru.
 - Усилена защита от подмены данных на клиенте (запрос информации о пользователе осуществляется серверной частью).
