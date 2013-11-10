@@ -25,6 +25,7 @@ class PluginNewsocialcomments extends Plugin {
 	protected $aInherits = array(
         'action' => array('ActionBlog','ActionAjax'),
 		'mapper' => array('ModuleComment_MapperComment'),
+        'module' => array('ModuleStream'),
         'entity' => array('ModuleComment_EntityComment','ModuleUser_EntityUser')
     );
 
