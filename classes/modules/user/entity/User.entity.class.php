@@ -70,8 +70,8 @@ class PluginNewsocialcomments_ModuleUser_EntityUser extends PluginNewsocialcomme
 	 * @return string
 	 */
 	public function getUserWebPath() {
-        if ($this->getId() || empty ($this->guestProfile)) return parent::getUserWebPath();
-        else return $this->guestProfile;
+        if ($this->getId()) return parent::getUserWebPath();
+        else return (empty ($this->guestProfile) ? Router::GetPath('profile') . 'guest/' : $this->guestProfile);
 	}
 }
 ?>
