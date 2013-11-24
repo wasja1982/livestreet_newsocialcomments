@@ -43,7 +43,7 @@ class PluginNewsocialcomments_ModuleUser_EntityUser extends PluginNewsocialcomme
 	 * @return string|null
 	 */
 	public function getMail() {
-        if ($this->getId()) return parent::getMail();
+        if ($this->getId() || empty($this->guestEmail)) return parent::getMail();
         else return $this->guestEmail;
 	}
 	/**
