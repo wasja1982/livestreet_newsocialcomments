@@ -1,4 +1,4 @@
-Плагин "New Social Comments" (версия 1.0.3) для LiveStreet 1.0.3
+Плагин "New Social Comments" (версия 1.0.4) для LiveStreet 1.0.3
 
 Основан на плагинах:
 1) "OpenComments" (автор: flexbyte, модификации: iMind) - https://catalog.livestreetcms.com/addon/view/39/, https://github.com/iM1nd/opencomments
@@ -43,6 +43,9 @@
 
 14) $config['use_auto_login'] - Автоматическая проверка авторизации при загрузке страницы. По умолчанию включена (true).
 
+15) $config['show_icon'] - Загружать JS-скрипт, отображающий иконки соцсетей возле имени автора комментария.
+Вместо данного скрипта рекомендуется использовать изменение шаблона. По умолчанию разрешено (true).
+
 
 
 УСТАНОВКА
@@ -58,18 +61,14 @@ ALTER TABLE `prefix_comment`
         ADD  `guest_extra` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
 
 
-4. ВНИМАНИЕ!
-Если у вас стоит другой шаблон, отличный от стандартного необходимо скопировать и изменить след. файлы:
-	comment_tree.tpl, comment.tpl, block.stream_comment.tpl, comment_list.tpl
-в /plugins/newsocialcomments/templates/skin/<имя_вашего_шаблона>
-
-Изменения, к-е необходимо добавить можно найти с помощью утилиты WinMerge сравнив два файла, например:
-файл 1 - /plugins/newsocialcomments/templates/skin/default/comment.tpl  и
-файл 2 - /templates/skin/new-jquery/comment.tpl
-
-
 
 ИЗМЕНЕНИЯ:
+1.0.4 (24.11.2013)
+- Добавлен параметр $config['show_icon'].
+- Исправлена ошибка с формированием ссылки на профиль автора у гостевого комментария.
+- Исправлено отображение информации об авторах комментариев в "Активности".
+- Исправлена ошибка с валидацией e-mail при регистрации пользователей.
+
 1.0.3 (10.11.2013):
 - Работа плагина переделана на использование хуков вместо делегации файлов шаблона.
 
