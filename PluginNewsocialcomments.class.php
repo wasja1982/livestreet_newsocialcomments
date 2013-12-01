@@ -44,6 +44,7 @@ class PluginNewsocialcomments extends Plugin {
 	 */
 	public function Init() {
         Config::Set('plugin.newsocialcomments.webpath', Plugin::GetTemplateWebPath(__CLASS__));
+        Config::Set('plugin.newsocialcomments.is_mobile', (class_exists('MobileDetect') && MobileDetect::IsMobileTemplate()));
 	}
 }
 ?>

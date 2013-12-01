@@ -59,7 +59,7 @@
 {include file='editor.tpl' sImgToLoad='form_comment_text' sSettingsTinymce='ls.settings.getTinymceComment()' sSettingsMarkitup='ls.settings.getMarkitupComment()'}
 
 <h4 class="reply-header" id="comment_id_0">
-    <a href="#" class="link-dotted" onclick="ls.comments.toggleCommentForm(0);document.getElementById('commentCaptcha').src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random(); return false;">{$sNoticeCommentAdd}</a>
+    <a href="#" class="{if $oConfig->GetValue('plugin.newsocialcomments.is_mobile')}button{else}link-dotted{/if}" onclick="ls.comments.toggleCommentForm(0);document.getElementById('commentCaptcha').src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random(); return false;">{$sNoticeCommentAdd}</a>
 </h4>
 <div id="reply" class="reply">
     <form method="post" id="form_comment" onsubmit="return false;" enctype="multipart/form-data">
@@ -75,9 +75,9 @@
                 (<a href="" id="sc_exit">{$aLang.plugin.newsocialcomments.newsocialcomments_exit}</a>)
             </div>
         {/if}
-        <div id="guest_input" style="padding-top:15px; padding-bottom:5px;"><b>{$aLang.plugin.newsocialcomments.newsocialcomments_name}:</b><input type="text" id="guest_name" class="input-text" name="guest_name" value="" style="width:200px;margin-left: 18px;" /></div>
+        <div id="guest_input" style="padding-top:15px; padding-bottom:5px;"><input type="text" id="guest_name" class="input-text input-width-full" name="guest_name" placeholder="{$aLang.plugin.newsocialcomments.newsocialcomments_name}" value="" /></div>
         {if $oConfig->GetValue('plugin.newsocialcomments.ask_mail')}
-        <div id="guest_email" style="padding-bottom:10px;"><b>E-Mail:</b> <input type="text" class="input-text" name="guest_email" value="" style="width:200px;" /> </div>
+        <div id="guest_email" style="padding-bottom:10px;"><input type="text" class="input-text input-width-full" name="guest_email" placeholder="{$aLang.plugin.newsocialcomments.newsocialcomments_mail}" value="" /> </div>
         {/if}
 
         <div id="guest_text">
@@ -87,10 +87,9 @@
 
         {hook run='form_add_comment_end'}
 
-        <div id="capcha" style="padding-top:15px;">
-                <b>{$aLang.plugin.newsocialcomments.newsocialcomments_captcha}:</b><br />
-                <img src="{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}" id="commentCaptcha" onclick="this.src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random();"><br />
-                <input type="text" name="captcha" value="" size="9" class="input-text" style="text-align: center;width:80px;"><br /><br />
+        <div id="capcha">
+                <img src="{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}" id="commentCaptcha" onclick="this.src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random();" class="captcha-image">
+                <input type="text" name="captcha" maxlength="3" value="" class="input-text input-width-300" placeholder="{$aLang.plugin.newsocialcomments.newsocialcomments_captcha}"><br /><br />
         </div>
         <button type="submit"  name="submit_comment"
                 id="comment-button-submit"
