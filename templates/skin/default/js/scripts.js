@@ -122,11 +122,11 @@ jQuery(document).ready(function() {
             });
         });
     }
-    $('.login.small_vk_icon').live("click",function(){
+    $('.login.small_vk_icon, .login.vk_icon').live("click",function(){
         VK.Auth.login(vk_auth, 0);
         return false
     });
-    $('.login.small_fb_icon').live("click",function(){
+    $('.login.small_fb_icon, .login.fb_icon').live("click",function(){
         FB.login(function(){
             FB.getLoginStatus(facebook_auth, true);
         }, {
@@ -134,7 +134,7 @@ jQuery(document).ready(function() {
         })
         return false
     });
-    $('.login.small_mr_icon').live("click",function(){
+    $('.login.small_mr_icon, .login.mr_icon').live("click",function(){
         mailru.connect.login([]);
         return false
     });

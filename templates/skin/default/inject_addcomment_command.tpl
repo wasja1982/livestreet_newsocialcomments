@@ -25,11 +25,14 @@
 	var use_mr_api = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}true{else}false{/if}{literal};
 </script>
 <style>
-	#social_info .icon {position:relative;top:2px;left:4px;padding:0;margin:0 2px 0 0;display:inline-block;width:16px;height:16px;}
-	.small_vk_icon {padding:2px 0 0 16px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons_small.png) -16px 0 no-repeat;}
-	.small_fb_icon {padding:2px 0 0 16px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons_small.png) -64px 0 no-repeat;}
-	.small_mr_icon {padding:2px 0 0 16px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons_small.png) -32px 0 no-repeat;}
-	.login.small_vk_icon, .login.small_fb_icon, .login.small_mr_icon {cursor:pointer;margin: 0 0px 0 6px;}
+	#social_info .icon {position:relative;top:2px;left:4px;padding:0;margin:0 2px 0 0;display:inline-block;}
+	.small_vk_icon {padding:2px 0 0 16px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons_small.png) -16px 0 no-repeat;width:16px;height:16px;}
+	.small_fb_icon {padding:2px 0 0 16px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons_small.png) -64px 0 no-repeat;width:16px;height:16px;}
+	.small_mr_icon {padding:2px 0 0 16px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons_small.png) -32px 0 no-repeat;width:16px;height:16px;}
+	.vk_icon {padding:10px 0 0 24px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons.png) -24px 0 no-repeat;width:24px;height:24px;}
+	.fb_icon {padding:10px 0 0 24px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons.png) -96px 0 no-repeat;width:24px;height:24px;}
+	.mr_icon {padding:10px 0 0 24px;background:url({/literal}{$oConfig->GetValue('plugin.newsocialcomments.webpath')}{literal}images/auth_icons.png) -48px 0 no-repeat;width:24px;height:24px;}
+	.login.small_vk_icon, .login.small_fb_icon, .login.small_mr_icon, .login.vk_icon, .login.fb_icon, .login.mr_icon {cursor:pointer;margin: 0 3px 0 3px;}
 	#social_info .name {padding-left:3px;}
 </style>
 {/literal}
@@ -63,9 +66,9 @@
         {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}
             <div id="social_chooser">
                 {$aLang.plugin.newsocialcomments.newsocialcomments_comment}:
-                {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}<a class="small_vk_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_vk}"></a>{/if}
-                {if $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}<a class="small_fb_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_fb}"></a>{/if}
-                {if $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}<a class="small_mr_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_mr}"></a>{/if}
+                {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}<a class="{if $oConfig->GetValue('plugin.newsocialcomments.use_small_icon')}small_{/if}vk_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_vk}"></a>{/if}
+                {if $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}<a class="{if $oConfig->GetValue('plugin.newsocialcomments.use_small_icon')}small_{/if}fb_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_fb}"></a>{/if}
+                {if $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}<a class="{if $oConfig->GetValue('plugin.newsocialcomments.use_small_icon')}small_{/if}mr_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_mr}"></a>{/if}
             </div>
             <div id="social_info" style="display:none">
                 {$aLang.plugin.newsocialcomments.newsocialcomments_hello}<span class="icon"></span> <span class="name"></span>

@@ -31,6 +31,9 @@ $config['use_auto_login']=true;
 // Вместо данного скрипта рекомендуется использовать изменение шаблона.
 $config['show_icon']=true;
 
+// Размер иконок - 16px (true) или 24px (false)
+$config['use_small_icon']=true;
+
 // Разрешить авторизацию через Facebook
 $config['use_fb_api']=true;
 // Идентификатор приложения для Facebook
