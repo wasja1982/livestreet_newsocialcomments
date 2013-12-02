@@ -64,7 +64,7 @@ function fill_form(type, name, avatar, email, profile) {
         if ($("#form_comment > input#social_avatar").length) $("#form_comment > input#social_avatar").attr("value", avatar);
         else $("#form_comment").append("<input type='hidden' name='social_avatar' id='social_avatar' value='"+avatar+"' />");
     if (profile)
-        if ($("#form_comment > input#social_avatar").length) $("#form_comment > input#social_profile").attr("value", profile);
+        if ($("#form_comment > input#social_profile").length) $("#form_comment > input#social_profile").attr("value", profile);
         else $("#form_comment").append("<input type='hidden' name='social_profile' id='social_profile' value='"+profile+"' />");
 }
 
@@ -82,6 +82,7 @@ function clear_form(type) {
     $("#form_comment").find("#social").remove();
     $("#sc_exit").removeClass(type);
     $("#form_comment").find("#social_avatar").remove();
+    $("#form_comment").find("#social_profile").remove();
 }
 
 jQuery(document).ready(function() {
