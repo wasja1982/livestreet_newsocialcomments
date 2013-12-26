@@ -123,7 +123,11 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
         /**
         * Проверяем текст комментария
         */
-        $sText=nl2br(strip_tags(getRequest('comment_text')));
+        if (Config::Get('plugin.newsocialcomments.use_parser')) {
+            $sText=$this->Text_Parser(getRequestStr('comment_text'));
+        } else {
+            $sText=nl2br(strip_tags(getRequestStr('comment_text')));
+        }
 
         if (!func_check($sText,'text',2,10000)) {
             $this->Message_AddErrorSingle($this->Lang_Get('topic_comment_add_text_error'),$this->Lang_Get('error'));

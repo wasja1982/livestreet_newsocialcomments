@@ -26,12 +26,12 @@ class PluginNewsocialcomments_ActionAjax extends PluginNewsocialcomments_Inherit
 	 */
 	protected function EventPreviewText() {
 
-		if ($this->oUserCurrent) {
+		if ($this->oUserCurrent || Config::Get('plugin.newsocialcomments.use_parser')) {
 			parent::EventPreviewText();
 			return;
 		}
 
-		$sText=getRequest('text',null,'post');
+		$sText=getRequestStr('text',null,'post');
 		$sTextResult = nl2br(strip_tags($sText));
 		$this->Viewer_AssignAjax('sText',$sTextResult);
 	}
