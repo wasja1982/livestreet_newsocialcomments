@@ -114,7 +114,7 @@ ls.socialcomments = (function ($) {
         this.init = function() {
             mailru.loader.require('api', function() {
                 mailru.connect.init(ls.socialcomments.options.mr_id, ls.socialcomments.options.mr_private);
-                mailru.events.listen(mailru.connect.events.login, this.checkStatus);
+                mailru.events.listen(mailru.connect.events.login, ls.socialcomments.mr.checkStatus);
                 mailru.events.listen(mailru.connect.events.logout, function(){
                     if (ls.socialcomments.mr.options.next) {
                         ls.socialcomments.mr.options.next.checkStatus();
