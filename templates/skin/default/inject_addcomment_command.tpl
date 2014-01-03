@@ -14,15 +14,22 @@
 {/if}
 {literal}
 <script type="text/javascript">
-	var vk_id = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.vk_id')}{literal}';
-	var fb_id = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.fb_id')}{literal}';
-	var mr_id = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.mr_id')}{literal}';
-	var mr_private = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.mr_private')}{literal}';
-	var guest_enabled = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.enabled')}true{else}false{/if}{literal};
-	var use_auto_login = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_auto_login')}true{else}false{/if}{literal};
-	var use_vk_api = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}true{else}false{/if}{literal};
-	var use_fb_api = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}true{else}false{/if}{literal};
-	var use_mr_api = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}true{else}false{/if}{literal};
+    var social_enabled = [];{/literal}
+    {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}
+    {literal}ls.socialcomments.options.vk_id = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.vk_id')}{literal}';
+    social_enabled.push(ls.socialcomments.vk.options.type);{/literal}
+    {/if}
+    {if $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}
+    {literal}ls.socialcomments.options.fb_id = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.fb_id')}{literal}';
+    social_enabled.push(ls.socialcomments.fb.options.type);{/literal}
+    {/if}
+    {if $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}
+    {literal}ls.socialcomments.options.mr_id = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.mr_id')}{literal}';
+    ls.socialcomments.options.mr_private = '{/literal}{$oConfig->GetValue('plugin.newsocialcomments.mr_private')}{literal}';
+    social_enabled.push(ls.socialcomments.mr.options.type);{/literal}
+    {/if}
+    {literal}ls.socialcomments.options.guest_enabled = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.enabled')}true{else}false{/if}{literal};
+    ls.socialcomments.options.use_auto_login = {/literal}{if $oConfig->GetValue('plugin.newsocialcomments.use_auto_login')}true{else}false{/if}{literal};
 </script>
 <style>
 	#social_info .icon {position:relative;top:2px;left:4px;padding:0;margin:0 2px 0 0;display:inline-block;}
@@ -54,6 +61,8 @@
         .each(function(){
             this.nodeValue = '';
         });
+
+        ls.socialcomments.init(social_enabled);
     });
 </script>
 {include file='editor.tpl' sImgToLoad='form_comment_text' sSettingsTinymce='ls.settings.getTinymceComment()' sSettingsMarkitup='ls.settings.getMarkitupComment()'}

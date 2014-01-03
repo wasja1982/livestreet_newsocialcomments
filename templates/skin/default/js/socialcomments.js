@@ -6,12 +6,11 @@ ls.socialcomments = (function ($) {
         fb_id: '0',
         mr_id: '0',
         mr_private: '0',
-        use_vk_api: false,
-        use_fb_api: false,
-        use_mr_api: false,
         use_auto_login: true,
         guest_enabled: false
     };
+    this.available = [];
+    this.enabled = [];
 
     this.vk = (function ($) {
         this.options = {
@@ -57,6 +56,7 @@ ls.socialcomments = (function ($) {
         };
         return this;
     }).call(this.vk || {},jQuery);
+    this.available.push(this.vk);
 
     this.fb = (function ($) {
         this.options = {
@@ -104,6 +104,7 @@ ls.socialcomments = (function ($) {
         };
         return this;
     }).call(this.fb || {},jQuery);
+    this.available.push(this.fb);
 
     this.mr = (function ($) {
         this.options = {
@@ -149,6 +150,7 @@ ls.socialcomments = (function ($) {
         };
         return this;
     }).call(this.mr || {},jQuery);
+    this.available.push(this.mr);
 
     this.fillForm = function(type, name, avatar, email, profile) {
         $("#guest_name").attr("value",name);
@@ -185,7 +187,7 @@ ls.socialcomments = (function ($) {
         $("#form_comment").find("#social_profile").remove();
     };
 
-    this.init = function() {
+    this.init = function(enabled) {
         $("#social_info").hide();
         $("#social_chooser").show();
         if (this.options.guest_enabled) {
@@ -193,55 +195,30 @@ ls.socialcomments = (function ($) {
         } else {
             $("#capcha, #guest_input, #guest_email, #guest_text").hide();
         }
-        if (this.options.use_vk_api) {
-            this.vk.init();
-        }
-        if (this.options.use_fb_api) {
-            this.fb.init();
-        }
-        if (this.options.use_mr_api) {
-            this.mr.init();
-        }
-        $('.login.small_vk_icon, .login.vk_icon').live("click", this.vk.login);
-        $('.login.small_fb_icon, .login.fb_icon').live("click", this.fb.login);
-        $('.login.small_mr_icon, .login.mr_icon').live("click", this.mr.login);
-        $('#sc_exit.vk').live("click", this.vk.logout);
-        $('#sc_exit.fb').live("click", this.fb.logout);
-        $('#sc_exit.mr').live("click", this.mr.logout);
-        if (this.options.use_auto_login) {
-            if (this.options.use_vk_api) {
-                if (this.options.use_fb_api) {
-                    this.vk.options.next = this.fb;
-                } else if (this.options.use_mr_api) {
-                    this.vk.options.next = this.mr;
+
+        var length_e = enabled.length;
+        for (var i = 0; i < length_e; i++) {
+            var value = enabled[i];
+            var length_a = this.available.length;
+            for (var j = 0; j < length_a; j++) {
+                if (this.available[j].options.type == value){
+                    this.available[j].init();
+                    $('.login.small_' + value + '_icon, .login.' + value + '_icon').live("click", this.available[j].login);
+                    $('#sc_exit.' + value).live("click", this.available[j].logout);
+                    this.enabled.push(this.available[j]);
                 }
             }
-            if (this.options.use_fb_api && this.options.use_mr_api) {
-                this.fb.options.next = this.mr;
+        }
+
+        if (this.options.use_auto_login && this.enabled.length > 0) {
+            length_e = this.enabled.length;
+            for (i = 0; i < length_e - 1; i++) {
+                this.enabled[i].options.next = this.enabled[i + 1];
             }
-            if (this.options.use_vk_api) {
-                this.vk.checkStatus();
-            } else if (this.options.use_fb_api) {
-                this.fb.checkStatus();
-            } else if (this.options.use_mr_api) {
-                this.mr.checkStatus();
-            }
+            this.enabled[length_e - 1].options.next = null;
+            this.enabled[0].checkStatus();
         }
     };
 
 	return this;
 }).call(ls.socialcomments || {},jQuery);
-
-jQuery(document).ready(function() {
-    ls.socialcomments.options.vk_id = vk_id;
-    ls.socialcomments.options.fb_id = fb_id;
-    ls.socialcomments.options.mr_id = mr_id;
-    ls.socialcomments.options.mr_private = mr_private;
-    ls.socialcomments.options.use_vk_api = use_vk_api;
-    ls.socialcomments.options.use_fb_api = use_fb_api;
-    ls.socialcomments.options.use_mr_api = use_mr_api;
-    ls.socialcomments.options.use_auto_login = use_auto_login;
-    ls.socialcomments.options.guest_enabled = guest_enabled;
-
-    ls.socialcomments.init();
-});
