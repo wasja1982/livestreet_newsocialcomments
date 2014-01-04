@@ -72,7 +72,7 @@
 </h4>
 <div id="reply" class="reply">
     <form method="post" id="form_comment" onsubmit="return false;" enctype="multipart/form-data">
-        {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api')}
+        {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api') or $oConfig->GetValue('plugin.newsocialcomments.use_fb_api') or $oConfig->GetValue('plugin.newsocialcomments.use_mr_api')}
             <div id="social_chooser">
                 {$aLang.plugin.newsocialcomments.newsocialcomments_comment}:
                 {if $oConfig->GetValue('plugin.newsocialcomments.use_vk_api')}<a class="{if $oConfig->GetValue('plugin.newsocialcomments.use_small_icon')}small_{/if}vk_icon login" title="{$aLang.plugin.newsocialcomments.newsocialcomments_comment_vk}"></a>{/if}
@@ -98,7 +98,7 @@
 
         <div id="capcha">
                 <img src="{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}" id="commentCaptcha" onclick="this.src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random();" class="captcha-image">
-                <input type="text" name="captcha" maxlength="3" value="" class="input-text input-width-300" placeholder="{$aLang.plugin.newsocialcomments.newsocialcomments_captcha}"><br /><br />
+                <input type="text" name="captcha" maxlength="3" value="" class="input-text input-width-300" placeholder="{$aLang.plugin.newsocialcomments.newsocialcomments_captcha}">
         </div>
         <button type="submit"  name="submit_comment"
                 id="comment-button-submit"
