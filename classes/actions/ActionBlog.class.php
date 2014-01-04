@@ -83,13 +83,13 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             $social_session = false;
             switch ($social_type) {
                 case "vk":
-                    $social_session = $this->checkVkAuth();
+                    $social_session = PluginNewsocialcomments::checkVkAuth();
                     break;
                 case "fb":
-                    $social_session = $this->checkFbAuth();
+                    $social_session = PluginNewsocialcomments::checkFbAuth();
                     break;
                 case "mr":
-                    $social_session = $this->checkMrAuth();
+                    $social_session = PluginNewsocialcomments::checkMrAuth();
                     break;
             }
             if (!in_array($social_type, array("vk", "fb", "mr")) || !$social_session) {
@@ -193,7 +193,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
         switch ($social_type) {
             case "vk":
                 if (Config::Get('plugin.newsocialcomments.use_server_check')) {
-                    $user_info = $this->getVkUserInfo($social_session);
+                    $user_info = PluginNewsocialcomments::getVkUserInfo($social_session);
                     if (is_array($user_info) && isset($user_info['uid']) && isset($user_info['first_name']) && isset($user_info['last_name'])) {
                         $oCommentNew->setGuestId($user_info['uid']);
                         $oCommentNew->setGuestName($user_info['first_name'] . ' ' . $user_info['last_name']);
@@ -209,7 +209,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                 break;
             case "fb":
                 if (Config::Get('plugin.newsocialcomments.use_server_check')) {
-                    $user_info = $this->getFbUserInfo($social_session);
+                    $user_info = PluginNewsocialcomments::getFbUserInfo($social_session);
                     if (is_array($user_info) && isset($user_info['id']) && isset($user_info['name'])) {
                         $oCommentNew->setGuestId($user_info['id']);
                         $oCommentNew->setGuestName($user_info['name']);
@@ -225,7 +225,7 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                 break;
             case "mr":
                 if (Config::Get('plugin.newsocialcomments.use_server_check')) {
-                    $user_info = $this->getMrUserInfo($social_session);
+                    $user_info = PluginNewsocialcomments::getMrUserInfo($social_session);
                     if (is_array($user_info) && isset($user_info['uid']) && isset($user_info['first_name']) && isset($user_info['last_name'])) {
                         $oCommentNew->setGuestId($user_info['uid']);
                         $oCommentNew->setGuestName($user_info['first_name'] . ' ' . $user_info['last_name']);
@@ -373,152 +373,6 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
 
         $this->Viewer_AssignAjax('iMaxIdComment',$iMaxIdComment);
         $this->Viewer_AssignAjax('aComments',$aComments);
-    }
-
-    /**
-     * Проверка авторизации Вконтакте
-     * http://vk.com/dev/openapi_auth
-     */
-    function checkVkAuth() {
-        $keys = array('expire', 'mid', 'secret', 'sid');
-        $vk_id = Config::Get('plugin.newsocialcomments.vk_id');
-        $vk_secret = Config::Get('plugin.newsocialcomments.vk_secret');
-        $session = array();
-        if (isset($_COOKIE['vk_app_' . $vk_id])) {
-            $vk_cookie = $_COOKIE['vk_app_' . $vk_id];
-            $session_data = explode ('&', $vk_cookie, 10);
-            foreach ($session_data as $pair) {
-                list($key, $value) = explode('=', $pair, 2);
-                if (!empty($key) && !empty($value)) {
-                    if ($key === 'sig') $sig = $value;
-                    elseif (in_array($key, $keys)) $session[$key] = $value;
-                }
-            }
-            foreach ($keys as $key) {
-                if (!isset($session[$key])) return false;
-            }
-            $sign = $this->getSign($session, $vk_secret);
-            if ($sig === $sign && $session['expire'] > time() && isset($session['mid'])) {
-                return $session;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Проверка авторизации Facebook
-     * https://developers.facebook.com/docs/facebook-login/using-login-with-games/
-     */
-    function checkFbAuth() {
-        $fb_id = Config::Get('plugin.newsocialcomments.fb_id');
-        $fb_secret = Config::Get('plugin.newsocialcomments.fb_secret');
-        $session = array();
-        if (isset($_COOKIE['fbsr_' . $fb_id])) {
-            $fb_cookie = $_COOKIE['fbsr_' . $fb_id];
-            list($encoded_sig, $session_data) = explode('.', $fb_cookie, 2);
-            $sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
-            $session = json_decode(base64_decode(strtr($session_data, '-_', '+/')), true);
-            $sign = hash_hmac('sha256', $session_data, $fb_secret, $raw = true);
-            if ($sig === $sign && (!isset($session['expires']) || $session['expires'] > time()) && isset($session['user_id'])) {
-                return $session;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Проверка авторизации Mail.ru
-     * http://api.mail.ru/docs/guides/jsapi/#mailru.session
-     */
-    function checkMrAuth() {
-        $mr_id = Config::Get('plugin.newsocialcomments.mr_id');
-        $session = array();
-        if (isset($_COOKIE['mrc'])) {
-            $mr_cookie = $_COOKIE['mrc'];
-            $session_data = explode('&', urldecode($mr_cookie), 10);
-            foreach ($session_data as $pair) {
-                list($key, $value) = explode('=', $pair, 2);
-                if (!empty($key) && !empty($value)) {
-                    $session[$key] = $value;
-                }
-            }
-            if ($session['app_id'] == $mr_id && isset($session['exp']) && $session['exp'] > time() && isset($session['is_app_user']) && $session['is_app_user'] == 1 && isset($session['vid'])) {
-                return $session;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Получение информации о пользователе Вконтакте
-     * http://vk.com/pages.php?o=-1&p=getProfiles
-     */
-    function getVkUserInfo($session) {
-        if (isset($session['mid'])) {
-            $params = array(
-                'uids'      => $session['mid'],
-                'fields'    => 'photo',
-                'v'         => '4.0',
-            );
-            $user_info = json_decode(@file_get_contents('https://api.vk.com/method/getProfiles' . '?' . urldecode(http_build_query($params))), true);
-            return (is_array($user_info) && isset($user_info['response']) && is_array($user_info['response']) && count($user_info['response']) ? $user_info['response'][0] : false);
-        }
-        return false;
-    }
-
-    /**
-     * Получение информации о пользователе Facebook
-     * http://developers.facebook.com/docs/facebook-login/access-tokens/
-     */
-    function getFbUserInfo($session) {
-        $fb_id = Config::Get('plugin.newsocialcomments.fb_id');
-        $fb_secret = Config::Get('plugin.newsocialcomments.fb_secret');
-
-        if (isset($session['user_id'])) {
-            $params = array(
-                'fields'        => 'id,name,email',
-                'access_token'  => $fb_id . '|' . $fb_secret,
-                'format'        => 'json',
-            );
-            $user_info = json_decode(@file_get_contents("https://graph.facebook.com/{$session['user_id']}" . '?' . urldecode(http_build_query($params))), true);
-            return (is_array($user_info) ? $user_info : false);
-        }
-        return false;
-    }
-
-    /**
-     * Получение информации о пользователе Mail.ru
-     * http://api.mail.ru/docs/reference/rest/users.getInfo/#result
-     */
-    function getMrUserInfo($session) {
-        $mr_id = Config::Get('plugin.newsocialcomments.mr_id');
-        $mr_secret = Config::Get('plugin.newsocialcomments.mr_secret');
-
-        if (isset($session['session_key'])) {
-            $params = array(
-                'method'       => 'users.getInfo',
-                'secure'       => '1',
-                'app_id'       => $mr_id,
-                'session_key'  => $session['session_key'],
-            );
-            $params['sig'] = $this->getSign($params, $mr_secret);
-            $user_info = json_decode(@file_get_contents('http://www.appsmail.ru/platform/api' . '?' . urldecode(http_build_query($params))), true);
-            return (is_array($user_info) && count($user_info) ? $user_info[0] : false);
-        }
-        return false;
-    }
-
-    /**
-     * Вычисление хеша
-     *
-     */
-    function getSign(array $keys, $secret_key) {
-        ksort($keys);
-        $params = '';
-        foreach ($keys as $key => $value) {
-            $params .= ($key . '=' . $value);
-        }
-        return md5($params . $secret_key);
     }
 }
 ?>
