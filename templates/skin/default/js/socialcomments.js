@@ -153,6 +153,7 @@ ls.socialcomments = (function ($) {
     this.available.push(this.mr);
 
     this.fillForm = function(type, name, avatar, email, profile) {
+        ls.hook.run('ls_socialcomments_fill_form_before', [type, name, avatar, email, profile], this);
         $("#guest_name").attr("value",name);
         $("#social_info span.name").text(name);
         $("#social_info span.icon").addClass("small_" + type + "_icon");
@@ -168,9 +169,11 @@ ls.socialcomments = (function ($) {
         if (profile)
             if ($("#form_comment > input#social_profile").length) $("#form_comment > input#social_profile").attr("value", profile);
             else $("#form_comment").append("<input type='hidden' name='social_profile' id='social_profile' value='"+profile+"' />");
+        ls.hook.run('ls_socialcomments_fill_form_after', [type, name, avatar, email, profile], this);
     };
 
     this.clearForm = function(type) {
+        ls.hook.run('ls_socialcomments_clear_form_before', [type], this);
         $("#guest_name").attr("value","");
         $("#social_info span.name").text("");
         $("#social_info span.icon").removeClass("small_" + type + "_icon");
@@ -185,9 +188,11 @@ ls.socialcomments = (function ($) {
         $("#sc_exit").removeClass(type);
         $("#form_comment").find("#social_avatar").remove();
         $("#form_comment").find("#social_profile").remove();
+        ls.hook.run('ls_socialcomments_clear_form_after', [type], this);
     };
 
     this.init = function(enabled) {
+        ls.hook.run('ls_socialcomments_init_before', [enabled], this);
         $("#social_info").hide();
         $("#social_chooser").show();
         if (this.options.guest_enabled) {
@@ -218,6 +223,7 @@ ls.socialcomments = (function ($) {
             this.enabled[length_e - 1].options.next = null;
             this.enabled[0].checkStatus();
         }
+        ls.hook.run('ls_socialcomments_init_after', [enabled], this);
     };
 
 	return this;
