@@ -35,6 +35,16 @@ class PluginNewsocialcomments_HookAddcomment extends Hook
                     if ($oTopic) $this->Viewer_Assign('bAllowNewComment', $oTopic->getForbidComment());
                     $this->Viewer_Assign('sNoticeCommentUnregistered', $this->Lang_Get('comment_unregistered'));
                     $this->Viewer_Assign('sNoticeCommentAdd', $this->Lang_Get('topic_comment_add'));
+
+                    $bQuoteComment = false;
+                    if (class_exists('PluginQuotecomment')) {
+                        $plugins = $this->Plugin_GetActivePlugins();
+                        if (in_array('quotecomment', $plugins)) {
+                            $bQuoteComment = true;
+                        }
+                    }
+                    $this->Viewer_Assign('bQuoteComment', $bQuoteComment);
+                    $this->Viewer_Assign('sParentUrl', ($bQuoteComment ? $oTopic->getUrl() : ""));
                     return $this->Viewer_Fetch($sTemplatePath);
             }
         }
