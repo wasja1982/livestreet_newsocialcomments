@@ -70,7 +70,9 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                 }
             }
 
-            if (!isset($_SESSION['captcha_keystring']) or $_SESSION['captcha_keystring']!=strtolower(getRequest('captcha'))) {
+            $bCaptchaCheck = (isset($_SESSION['captcha_keystring']) && $_SESSION['captcha_keystring'] == strtolower(getRequest('captcha')));
+            $this->Hook_Run('newsocialcomments_captcha_check', array('bCaptchaCheck' => &$bCaptchaCheck));
+            if (!$bCaptchaCheck) {
                 $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_captcha'),$this->Lang_Get('error'));
                 return;
             }
