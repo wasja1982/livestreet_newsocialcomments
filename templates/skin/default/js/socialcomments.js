@@ -158,7 +158,7 @@ ls.socialcomments = (function ($) {
         $("#social_info span.name").text(name);
         $("#social_info span.icon").addClass("small_" + type + "_icon");
         $("#social_info, #guest_text").show();
-        $("#social_chooser, #capcha, #guest_input, #guest_email").hide();
+        $("#social_chooser, #captcha, #guest_input, #guest_email").hide();
         if ($("#form_comment > input#social").length) $("#form_comment > input#social").attr("value", type);
         else $("#form_comment").append("<input type='hidden' name='social' id='social' value='" + type + "' />");
         if (email) $("#guest_email > input").attr("value", email);
@@ -180,9 +180,9 @@ ls.socialcomments = (function ($) {
         $("#social_info").hide();
         $("#social_chooser").show();
         if (this.options.guest_enabled) {
-            $("#capcha, #guest_input, #guest_email, #guest_text").show();
+            $("#captcha, #guest_input, #guest_email, #guest_text").show();
         } else {
-            $("#capcha, #guest_input, #guest_email, #guest_text").hide();
+            $("#captcha, #guest_input, #guest_email, #guest_text").hide();
         }
         $("#form_comment").find("#social").remove();
         $("#sc_exit").removeClass(type);
@@ -196,9 +196,9 @@ ls.socialcomments = (function ($) {
         $("#social_info").hide();
         $("#social_chooser").show();
         if (this.options.guest_enabled) {
-            $("#capcha, #guest_input, #guest_email, #guest_text").show();
+            $("#captcha, #guest_input, #guest_email, #guest_text").show();
         } else {
-            $("#capcha, #guest_input, #guest_email, #guest_text").hide();
+            $("#captcha, #guest_input, #guest_email, #guest_text").hide();
         }
 
         var length_e = enabled.length;
