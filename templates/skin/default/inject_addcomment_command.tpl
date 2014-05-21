@@ -54,6 +54,11 @@
 </style>
 {/literal}
 <script type="text/javascript">
+    function reloadCaptcha() {
+        {hookb run="newsocialcomments_captcha_reload"}
+        document.getElementById('commentCaptcha').src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random();
+        {/hookb}
+    }
     jQuery(document).ready(function($){
         {foreach from=$aComments item=oComment}
             {if !$oComment->getDelete()}
@@ -79,7 +84,7 @@
 {include file='editor.tpl' sImgToLoad='form_comment_text' sSettingsTinymce='ls.settings.getTinymceComment()' sSettingsMarkitup='ls.settings.getMarkitupComment()'}
 
 <h4 class="reply-header" id="comment_id_0">
-    <a href="#" class="{if $oConfig->GetValue('plugin.newsocialcomments.is_mobile')}button{else}link-dotted{/if}" onclick="ls.comments.toggleCommentForm(0);document.getElementById('commentCaptcha').src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random(); return false;">{$sNoticeCommentAdd}</a>
+    <a href="#" class="{if $oConfig->GetValue('plugin.newsocialcomments.is_mobile')}button{else}link-dotted{/if}" onclick="ls.comments.toggleCommentForm(0);reloadCaptcha();return false;">{$sNoticeCommentAdd}</a>
 </h4>
 <div id="reply" class="reply">
     <form method="post" id="form_comment" onsubmit="return false;" enctype="multipart/form-data">
@@ -107,12 +112,12 @@
 
         {hook run='form_add_comment_end'}
 
-        {hookb run="newsocialcomments_captcha"}
         <div id="captcha">
-                <img src="{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}" id="commentCaptcha" onclick="this.src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random();" class="captcha-image">
-                <input type="text" name="captcha" maxlength="3" value="" class="input-text input-width-300" placeholder="{$aLang.plugin.newsocialcomments.newsocialcomments_captcha}">
+            {hookb run="newsocialcomments_captcha"}
+            <img src="{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}" id="commentCaptcha" onclick="this.src='{cfg name='path.root.engine_lib'}/external/kcaptcha/index.php?{$_sPhpSessionName}={$_sPhpSessionId}&n='+Math.random();" class="captcha-image">
+            <input type="text" name="captcha" maxlength="3" value="" class="input-text input-width-300" placeholder="{$aLang.plugin.newsocialcomments.newsocialcomments_captcha}">
+            {/hookb}
         </div>
-        {/hookb}
         <button type="submit"  name="submit_comment"
                 id="comment-button-submit"
                 onclick="ls.comments.add('form_comment',{$iTargetId},'{$sTargetType}'); return false;"
