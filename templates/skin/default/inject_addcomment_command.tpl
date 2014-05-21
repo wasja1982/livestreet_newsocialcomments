@@ -62,8 +62,8 @@
     jQuery(document).ready(function($){
         {foreach from=$aComments item=oComment}
             {if !$oComment->getDelete()}
-                $("div#comment_wrapper_id_{$oComment->getId()} ul.comment-info").first().append('<li><a href="#" onclick="ls.comments.toggleCommentForm({$oComment->getId()}); return false;" class="reply-link link-dotted">{$aLang.comment_answer}</a></li>');
-                {if $bQuoteComment}$("div#comment_wrapper_id_{$oComment->getId()} ul.comment-info").first().append('<li><a href="#" class="comment-delete link-dotted" onclick="ls.comments.addQuotedText({$oComment->getId()}); return false;">{$aLang.plugin.quotecomment.quote}</a></li>');{/if}
+                $("div#comment_wrapper_id_{$oComment->getId()} ul.comment-info").first().append('<li><a href="#" onclick="ls.comments.toggleCommentForm({$oComment->getId()});reloadCaptcha();return false;" class="reply-link link-dotted">{$aLang.comment_answer}</a></li>');
+                {if $bQuoteComment}$("div#comment_wrapper_id_{$oComment->getId()} ul.comment-info").first().append('<li><a href="#" class="comment-delete link-dotted" onclick="ls.comments.addQuotedText({$oComment->getId()});reloadCaptcha();return false;">{$aLang.plugin.quotecomment.quote}</a></li>');{/if}
             {/if}
         {/foreach}
         $("div#content:contains('{$sNoticeCommentUnregistered}')")
