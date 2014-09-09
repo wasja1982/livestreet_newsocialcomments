@@ -74,6 +74,22 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                     $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_mail'),$this->Lang_Get('error'));
                     return;
                 }
+                if (Config::Get('plugin.newsocialcomments.use_mail_check')) {
+                    $aEmail = explode("@", getRequestStr("guest_email"));
+                    $bCorrect = false;
+                    if (count($aEmail) > 1 && getmxrr($aEmail[1], $aMX) && count($aMX)) {
+                        foreach ($aMX as $sMX) {
+                            if ($sMX && $sMX !== '0.0.0.0') {
+                                $bCorrect = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!$bCorrect) {
+                        $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_mail'),$this->Lang_Get('error'));
+                        return;
+                    }
+                }
             }
 
             $bCaptchaCheck = (isset($_SESSION['captcha_keystring']) && $_SESSION['captcha_keystring'] == strtolower(getRequest('captcha')));
