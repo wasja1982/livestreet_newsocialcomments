@@ -38,6 +38,12 @@ $config['use_small_icon']=true;
 // Потенциально может снизить безопасность сайта. По умолчанию отключено (false).
 $config['use_parser']=false;
 
+// Добавлять в форму дополнительное поле для борьбы со спамом
+$config['add_field']=true;
+
+// Название дополнительного поля для борьбы со спамом
+$config['field_name']="guest_phone";
+
 // Разрешить авторизацию через Facebook
 $config['use_fb_api']=true;
 // Идентификатор приложения для Facebook

@@ -104,6 +104,9 @@
         {if $oConfig->GetValue('plugin.newsocialcomments.ask_mail')}
         <div id="guest_email" style="padding-bottom:10px;"><input type="text" class="input-text input-width-full" name="guest_email" placeholder="{$aLang.plugin.newsocialcomments.newsocialcomments_mail}" value="" /> </div>
         {/if}
+        {if $oConfig->GetValue('plugin.newsocialcomments.add_field')}
+        <div id="{$oConfig->GetValue('plugin.newsocialcomments.field_name')}" style="padding-bottom:10px;display:none"><input type="text" class="input-text input-width-full" name="{$oConfig->GetValue('plugin.newsocialcomments.field_name')}" value="" /> </div>
+        {/if}
 
         <div id="guest_text">
         {hook run='form_add_comment_begin'}

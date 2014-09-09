@@ -37,6 +37,12 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
         } else {
             $this->oUserCurrent = $this->User_GetUserById(0);
         }
+
+        if (Config::Get('plugin.newsocialcomments.add_field') && getRequest(Config::Get('plugin.newsocialcomments.field_name')) !== "") {
+            $this->Message_AddErrorSingle($this->Lang_Get('not_access'),$this->Lang_Get('error'));
+            return;
+        }
+
         $social_type = getRequest("social");
 
         if (!Config::Get('plugin.newsocialcomments.enabled') && !$social_type) {
