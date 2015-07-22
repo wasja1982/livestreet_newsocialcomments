@@ -304,6 +304,11 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             $this->oUserCurrent->setDateCommentLast(date("Y-m-d H:i:s"));
             $this->User_Update($this->oUserCurrent);
 
+            $this->oUserCurrent->setGuestName($oCommentNew->getGuestName());
+            $this->oUserCurrent->setGuestEmail($oCommentNew->getGuestEmail());
+            $this->oUserCurrent->setGuestAvatar($oCommentNew->getGuestAvatar());
+            $this->oUserCurrent->setGuestProfile($oCommentNew->getGuestProfile());
+            
             /**
              * Список емайлов на которые не нужно отправлять уведомление
             */
