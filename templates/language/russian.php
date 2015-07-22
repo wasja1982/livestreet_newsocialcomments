@@ -34,6 +34,7 @@ return array(
 	'newsocialcomments_error_social' => 'Невозможно загрузить данные для авторизации.',
 	'newsocialcomments_error_captcha' => 'Неверный код',
 	'newsocialcomments_error_auth' => 'Ошибка авторизации в социальной сети.',
+	'newsocialcomments_error_name_exist' => 'Это имя уже используется.',
 
 );
 

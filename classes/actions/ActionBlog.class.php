@@ -67,6 +67,10 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
             $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_name'),$this->Lang_Get('error'));
             return;
         }
+        if ($this->User_GetUserByLogin(getRequest("guest_name"))) {
+            $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_name_exist'),$this->Lang_Get('error'));
+            return;
+        }
 
         if (!$social_type) {
             if (Config::Get('plugin.newsocialcomments.ask_mail')) {
