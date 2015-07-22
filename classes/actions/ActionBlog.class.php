@@ -78,6 +78,10 @@ class PluginNewsocialcomments_ActionBlog extends PluginNewsocialcomments_Inherit
                     $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_mail'),$this->Lang_Get('error'));
                     return;
                 }
+                if (!$this->PluginNewsocialcomments_Comment_IsUniqueName(getRequest("guest_name"), getRequest("guest_email"))) {
+                    $this->Message_AddErrorSingle($this->Lang_Get('plugin.newsocialcomments.newsocialcomments_error_name_not_unique'),$this->Lang_Get('error'));
+                    return;
+                }
                 if (Config::Get('plugin.newsocialcomments.use_mail_check')) {
                     $aEmail = explode("@", getRequestStr("guest_email"));
                     $bCorrect = false;

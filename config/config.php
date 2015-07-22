@@ -47,6 +47,9 @@ $config['add_field']=true;
 // Название дополнительного поля для борьбы со спамом
 $config['field_name']="guest_phone";
 
+// Проверять совпадение пары "имя - e-mail" для гостевых комментариев (используется при $config['ask_mail'] = true)
+$config['check_unique']=true;
+
 // Разрешить авторизацию через Facebook
 $config['use_fb_api']=true;
 // Идентификатор приложения для Facebook

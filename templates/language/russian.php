@@ -35,6 +35,7 @@ return array(
 	'newsocialcomments_error_captcha' => 'Неверный код',
 	'newsocialcomments_error_auth' => 'Ошибка авторизации в социальной сети.',
 	'newsocialcomments_error_name_exist' => 'Это имя уже используется.',
+	'newsocialcomments_error_name_not_unique' => 'Это имя уже использовалось с другим адресом e-mail.',
 
 );
 
